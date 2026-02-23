@@ -132,31 +132,57 @@ if st.session_state.step == "home":
     if st.button("INITIALIZE AI DIAGNOSTIC"): nav("inputs")
     st.markdown('</div>', unsafe_allow_html=True)
 
-elif st.session_state.step == "inputs":
-    with st.container():
-        st.markdown('<div class="res-card"><h3>📍 Contextual Background</h3>', unsafe_allow_html=True)
-        c_sub, c_ten = st.columns([2, 1])
-        with c_sub:
-            addr = st.text_input("Suburb Address", placeholder="e.g. Hurstville, NSW")
-        with c_ten:
-            months = st.number_input("Months in Sydney", min_value=0, value=12)
-        lit = st.select_slider("Financial Literacy Level", options=["Novice", "Intermediate", "Advanced"],
-                               value="Intermediate")
+elif st.session_state.step == "results":
+    res = st.session_state.data
+    ai = run_research_model(res)
 
-        st.markdown('<h3>💰 Liquidity & Cashflow</h3>', unsafe_allow_html=True)
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            inc = st.number_input("Monthly Job Salary (AUD)", value=3000)
-        with col2:
-            p_supp = st.radio("Access to Family Support?", ["No", "Yes"])
-        with col3:
-            p_amt = st.number_input("Monthly Support Amount", value=0) if p_supp == "Yes" else 0
+    # --- Metrics Display ---
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Resilience Index", f"{ai['score']}/100")
+    m2.metric("Monthly Surplus", f"${ai['m_surplus']}")
+    m3.metric("Financial Runway", f"{ai['runway']} Mo")
+    m4.metric("UberEats Ratio", f"{ai['uber_pct']}%")
 
-        col4, col5 = st.columns(2)
-        with col4:
-            savings = st.number_input("Current Savings (AUD)", value=2500)
-        with col5:
-            remit = st.number_input("Monthly Remittance (Sent Home)", value=0)
+    # ... [Keep your chart code here] ...
+
+    st.markdown('<div class="res-card"><h3>📝 Research Data Submission</h3>', unsafe_allow_html=True)
+
+    # Feedback sliders (outside of a form to prevent sync hangs)
+    trust = st.select_slider("Trust in AI Diagnostic", options=[1, 2, 3, 4, 5], value=3)
+    useful = st.radio("Will this influence your financial behavior?", ["Yes", "No", "Maybe"])
+
+    if 'done' not in st.session_state:
+        if st.button("🚀 SYNC DATA TO RESEARCH DATABASE", type="primary"):
+            with st.spinner("Writing to Google Cloud..."):
+                active_sheet = connect_to_sheet()
+                if active_sheet:
+                    try:
+                        # Prepare the 17-column row
+                        row = [
+                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            "Yes", res['rent'], res['income'], res['addr'], res['uber'],
+                            trust, useful, ai['score'], res['meals'], res['p_supp'],
+                            res['remit'], res['p_amt'], res['savings'], res['trans'],
+                            res['lit'], res['months']
+                        ]
+
+                        # The "USER_ENTERED" flag makes the data visible instantly
+                        active_sheet.append_row(row, value_input_option="USER_ENTERED")
+
+                        st.session_state.done = True
+                        st.balloons()
+                        st.success("✅ Data successfully saved to the Master Sheet.")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Write Error: {e}")
+                else:
+                    st.warning(
+                        "Could not establish connection. Please check if the 'Research Bot' has Editor access to the sheet.")
+    else:
+        st.success("✅ Data synchronized. Thank you for your contribution!")
+        if st.button("Reset for New Entry"):
+            del st.session_state.done
+            nav("home")
 
         st.markdown('<h3>📉 Behavioral Spending (Weekly)</h3>', unsafe_allow_html=True)
         col6, col7, col8 = st.columns(3)
