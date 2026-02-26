@@ -49,7 +49,7 @@ st.set_page_config(page_title="Resilience Lab AI", layout="wide")
 st.markdown("""
 <style>
     .stApp { background-color: #F8FAFC !important; color: #0F172A; }
-    p, label, h1, h2, h3, b { color: #0F172A !important; }
+    p, label, h1, h2, h3, b { color: #0f52ba  !important; }
     [data-testid="stMetricValue"] { color: #2563EB !important; font-weight: 800; }
     .nav-header { background: #0F172A; padding: 40px; text-align: center; border-radius: 0 0 25px 25px; color: white; margin-bottom: 30px;}
     .res-card { background: white; padding: 35px; border-radius: 20px; border: 1px solid #E2E8F0; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -142,3 +142,4 @@ elif st.session_state.step == "results":
         st.rerun()
 
 st.markdown('<div style="text-align:center; color:#94A3B8; padding:40px;">Researcher: Sandeep Sharma | Excelsia College</div>', unsafe_allow_html=True)
+
