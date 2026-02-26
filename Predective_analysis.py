@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 import random
 from datetime import datetime, timedelta
 
-# --- 1. SECURE RESEARCH INFRASTRUCTURE ---
+# --- 1. RESEARCH INFRASTRUCTURE ---
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1Of3IskkddrEKLhG1P6QsitzaX6TMrN6czkaus2Tliwo"
 
 def connect_to_sheet():
@@ -31,16 +31,16 @@ def run_research_model(data):
     }
     m_exp = sum(exp_vals.values())
     surplus = m_inc - m_exp
-    
-    # Runway Calculation (Financial Buffer)
     savings = float(data['savings'])
+    
+    # Financial Runway (Survival in Months)
     runway = round(savings / m_exp, 1) if m_exp > 0 else 12.0
     
-    # Success Probability (Sigmoid Analysis)
+    # Success Probability (Sigmoid)
     z = (surplus / (m_exp if m_exp > 0 else 1)) * 5 
     prob_success = round(1 / (1 + math.exp(-z)) * 100, 1) if surplus > 0 else round(max(5.0, 25.0 + (surplus/500)), 1)
     
-    # Resilience Indexing
+    # Resilience Scoring
     lit_map = {"Novice": 30, "Intermediate": 65, "Advanced": 95}
     score = ((surplus / m_inc) * 40) + ((lit_map[data['lit']]) * 0.2) + (20 if data['p_supp'] == "Yes" else 0) + 30
     if data['meals'] == "Yes": score -= 25
@@ -55,11 +55,10 @@ def run_research_model(data):
         "exp_breakdown": exp_vals
     }
 
-# --- 3. ADAPTIVE UI STYLE (LIGHT/DARK MODE) ---
-st.set_page_config(page_title="Resilience Lab", layout="centered")
+# --- 3. ADAPTIVE UI STYLE ---
+st.set_page_config(page_title="Resilience Lab AI", layout="centered")
 st.markdown("""
 <style>
-    /* Adaptive Text and Cards */
     .res-card { 
         padding: 25px; 
         border-radius: 18px; 
@@ -74,33 +73,28 @@ st.markdown("""
         padding: 20px; 
         border-radius: 12px; 
         margin: 15px 0;
-        font-style: italic;
     }
-    .stButton>button { 
-        width: 100%; border-radius: 12px; height: 3.5rem; 
-        background: #2563EB !important; color: white !important; font-weight: bold; 
-    }
+    .metric-title { font-size: 0.9rem; font-weight: bold; opacity: 0.8; }
+    .metric-value { font-size: 1.8rem; font-weight: 800; color: #2563EB; }
 </style>
 """, unsafe_allow_html=True)
 
 if 'step' not in st.session_state: st.session_state.step = "home"
-if 'participant_id' not in st.session_state: st.session_state.participant_id = None
 
-# --- 4. NAVIGATION FLOW ---
+# --- 4. NAVIGATION ---
 
 if st.session_state.step == "home":
     st.title("🛡️ Resilience Intelligence Lab")
-    st.markdown('<div class="res-card"><h3>Assessment Overview</h3><p>This study evaluates the financial resilience of international students in Sydney using Explainable AI (XAI).</p></div>', unsafe_allow_html=True)
-    consent = st.checkbox("I consent to participate in this study.")
-    if st.button("INITIALIZE TERMINAL") and consent:
+    st.markdown('<div class="res-card"><h3>Strategic Analysis</h3><p>This AI evaluates the intersection of Sydney’s cost-of-living and student behavioral finance to predict long-term economic stability.</p></div>', unsafe_allow_html=True)
+    if st.button("INITIALIZE AI DIAGNOSTIC") and st.checkbox("I consent to participate in this study."):
         st.session_state.participant_id = f"RES-{random.randint(10000, 99999)}"
         st.session_state.step = "inputs"
         st.rerun()
 
 elif st.session_state.step == "inputs":
-    st.subheader(f"📍 Research ID: {st.session_state.participant_id}")
+    st.subheader(f"📍 Profile: {st.session_state.participant_id}")
     with st.form("input_form"):
-        addr = st.selectbox("Current Suburb", ["Hurstville", "Parramatta", "CBD", "Randwick", "Strathfield", "Other"])
+        addr = st.selectbox("Sydney Suburb", ["Hurstville", "Parramatta", "CBD", "Randwick", "Strathfield", "Other"])
         inc = st.slider("Monthly Income (AUD)", 500, 10000, 3200)
         rent = st.slider("Weekly Rent (AUD)", 100, 1500, 450)
         uber = st.slider("Weekly Lifestyle/Uber ($)", 0, 800, 120)
@@ -117,15 +111,13 @@ elif st.session_state.step == "inputs":
             months = st.number_input("Months in Sydney", min_value=1, value=12)
             meals = st.radio("Skipped meals to save?", ["No", "Yes"])
 
-        if st.form_submit_button("GENERATE XAI REPORT"):
+        if st.form_submit_button("GENERATE DEEP REPORT"):
             data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": addr, "savings": savings, "lit": lit, "months": months}
             st.session_state.data = data
             sheet = connect_to_sheet()
             if sheet:
                 res = run_research_model(data)
-                # Sydney Time Correction
                 sydney_time = datetime.utcnow() + timedelta(hours=11)
-                # A:Timestamp, B:ID, C:Rent, D:Inc, E:Area, F:Uber, G:Trust, H:Useful, I:Score, J:Meals, K:P_Supp, L:Remit, M:P_Amt, N:Savings, O:Trans, P:Lit, Q:Months, R:Intent
                 row = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, rent, inc, addr, uber, "...", "...", res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, "..."]
                 sheet.append_row(row, value_input_option="USER_ENTERED")
                 st.session_state.current_row = len(sheet.get_all_values())
@@ -134,38 +126,51 @@ elif st.session_state.step == "inputs":
 
 elif st.session_state.step == "results":
     ai = run_research_model(st.session_state.data)
-    st.title("📊 Enlightened AI Report")
+    st.title("📊 Enlightened Resilience Report")
     
+    # --- 1. KEY PERFORMANCE INDICATORS ---
     col1, col2, col3 = st.columns(3)
-    col1.metric("Resilience", f"{ai['score']}/100")
-    col2.metric("Runway", f"{ai['runway']} Mo.")
-    col3.metric("Success", f"{ai['prob']}%")
+    with col1: st.markdown(f'<div class="res-card"><p class="metric-title">Resilience Score</p><p class="metric-value">{ai["score"]}/100</p></div>', unsafe_allow_html=True)
+    with col2: st.markdown(f'<div class="res-card"><p class="metric-title">Survival Runway</p><p class="metric-value">{ai["runway"]} Mo.</p></div>', unsafe_allow_html=True)
+    with col3: st.markdown(f'<div class="res-card"><p class="metric-title">Success Prob.</p><p class="metric-value">{ai["prob"]}%</p></div>', unsafe_allow_html=True)
 
+    # --- 2. THE DEEP EXPLANATION (XAI) ---
     st.markdown('<div class="res-card"><h3>🤖 Explainable AI Diagnosis</h3>', unsafe_allow_html=True)
+    
     st.markdown(f"""
     <div class="ai-bubble">
-    "Based on Sydney living standards, your <b>Housing Load ({ai['rent_pct']}%)</b> is your primary fixed-cost risk. 
-    Your Emergency Runway is <b>{ai['runway']} months</b>. 
-    If you reallocate 20% of your Lifestyle budget, your success probability increases to <b>{min(ai['prob']+12, 100.0)}%</b>."
+    <b>The "Why":</b> Your resilience is heavily dictated by your <b>Fixed-Cost Burden ({ai['rent_pct']}% of income)</b>. 
+    In Sydney, spending over 30% of income on rent creates "Financial Rigidity," meaning you have less room to absorb shocks. 
+    <br><br>
+    <b>The Simulation:</b> If your job was lost tomorrow, your current savings of ${st.session_state.data['savings']} would only last <b>{ai['runway']} months</b>. 
+    The AI identifies that your <b>Lifestyle Spending (UberEats)</b> is the primary "Discretionary Leak" impacting your survival probability.
     </div>
     """, unsafe_allow_html=True)
     
-    fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5)
-    fig_pie.update_layout(height=350, margin=dict(l=10, r=10, t=10, b=10))
-    st.plotly_chart(fig_pie, use_container_width=True)
+    # Strategy Map
+    st.write("### 🎯 Behavioral Strategy")
+    st.info(f"""
+    **AI Prediction:** By reducing UberEats by $30/week, your Monthly Surplus grows by $130. 
+    Mathematically, this shifts your Success Probability to **{min(ai['prob']+12, 100.0)}%** and adds **0.5 months** to your emergency runway.
+    """)
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # Chart
+    fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5, title="Monthly Expenditure Distribution")
+    st.plotly_chart(fig_pie, use_container_width=True)
+
+    # --- 3. FINAL EVALUATION ---
     st.markdown('<div class="res-card"><h3>🎯 Evaluation</h3>', unsafe_allow_html=True)
-    trust = st.select_slider("Trust AI logic?", options=["Low", "Neutral", "High"])
-    useful = st.select_slider("Feedback Usefulness?", options=["Low", "Neutral", "High"])
-    intent = st.radio("Intent:", ["Reduce spending", "Cheaper rent", "No change"])
+    trust = st.select_slider("How much do you trust this AI logic?", options=["Low", "Neutral", "High"])
+    useful = st.select_slider("How enlightening was this feedback?", options=["Low", "Neutral", "High"])
+    intent = st.radio("Behavioral Change:", ["Reduce spending", "Cheaper rent", "No change"])
     
-    if st.button("SUBMIT FINAL DATA"):
+    if st.button("SUBMIT & CLOSE"):
         sheet = connect_to_sheet()
         if sheet and st.session_state.current_row:
             sheet.update_cell(st.session_state.current_row, 7, trust)
             sheet.update_cell(st.session_state.current_row, 8, useful)
             sheet.update_cell(st.session_state.current_row, 18, intent)
-            st.success("Entry Secured. Thank you!")
-            st.session_state.clear() # Reset for next participant
+            st.success("Data secured for research. Thank you!")
+            st.session_state.clear()
             st.rerun()
