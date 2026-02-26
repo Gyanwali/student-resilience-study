@@ -54,7 +54,7 @@ st.markdown("""
 <style>
     .res-card { padding: 25px; border-radius: 18px; border: 1px solid rgba(128, 128, 128, 0.2); 
                 margin-bottom: 20px; background: rgba(128, 128, 128, 0.08); backdrop-filter: blur(10px); }
-    .ai-bubble { background: rgba(37, 99, 235, 0.1); border-left: 5px solid #2563EB; padding: 20px; 
+    .ai-bubble { background: rgba(37, 99, 235, 0.1); border-left: 5px solid #2563EB; padding: 18px; 
                  border-radius: 12px; margin: 15px 0; line-height: 1.6; }
     .stButton>button { width: 100%; border-radius: 12px; height: 3.5rem; background: #2563EB !important; 
                        color: white !important; font-weight: bold; }
@@ -67,35 +67,33 @@ if 'step' not in st.session_state: st.session_state.step = "home"
 
 if st.session_state.step == "home":
     st.title("🛡️ Resilience Intelligence Lab")
-    st.markdown('<div class="res-card"><h3>Assessment Overview</h3><p>Evaluates financial resilience of Sydney students using Explainable AI (XAI). All data is anonymous.</p></div>', unsafe_allow_html=True)
-    if st.checkbox("I consent to participate in this study."):
-        if st.button("INITIALIZE TERMINAL"):
+    st.markdown('<div class="res-card"><h3>Assessment Briefing</h3><p>Evaluates student financial resilience in Sydney. All data is saved anonymously for academic research.</p></div>', unsafe_allow_html=True)
+    consent = st.checkbox("I consent to participate in this study.")
+    if st.button("INITIALIZE TERMINAL"):
+        if consent:
             st.session_state.participant_id = f"RES-{random.randint(10000, 99999)}"
             st.session_state.step = "inputs"
             st.rerun()
+        else:
+            st.error("Consent is required to proceed.")
 
 elif st.session_state.step == "inputs":
-    st.subheader(f"📍 Research Profile: {st.session_state.participant_id}")
+    st.subheader(f"📍 Participant ID: {st.session_state.participant_id}")
     with st.form("input_form"):
-        # EXPANDED SYDNEY SUBURBS LIST
-        suburbs = sorted([
-            "Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield", 
-            "Burwood", "Auburn", "Ashfield", "Kingsford", "Kensington", 
-            "Rhodes", "Macquarie Park", "Chatswood", "Wolli Creek", "Rockdale", 
-            "Blacktown", "Harris Park", "Lidcombe", "Bankstown", "Epping", 
-            "North Sydney", "Maroubra", "Ryde", "Campsie", "Lakemba", "Other"
-        ])
-        addr = st.selectbox("Select your Sydney Suburb", suburbs)
-        
-        inc = st.slider("Monthly Income (AUD)", 500, 10000, 3200)
-        rent = st.slider("Weekly Rent (AUD)", 100, 1500, 450)
+        suburbs = sorted(["Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield", "Burwood", "Auburn", "Kensington", "Rhodes", "Wolli Creek", "Other"])
+        addr_choice = st.selectbox("Current Suburb", suburbs)
+        custom_sub = st.text_input("If 'Other', type your suburb here:")
+        final_addr = custom_sub if addr_choice == "Other" else addr_choice
+
+        inc = st.slider("Monthly Income ($)", 500, 10000, 3200)
+        rent = st.slider("Weekly Rent ($)", 100, 1500, 450)
         uber = st.slider("Weekly Lifestyle/Uber ($)", 0, 800, 120)
         
-        with st.expander("Secondary Research Variables"):
+        with st.expander("Show More Research Variables"):
             lit = st.select_slider("Financial Literacy", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
-            p_supp = st.radio("Family Support Available?", ["No", "Yes"])
+            p_supp = st.radio("Family Support?", ["No", "Yes"])
             p_amt = st.slider("Monthly Support ($)", 0, 5000, 0)
-            savings = st.slider("Total Savings ($)", 0, 50000, 2000)
+            savings = st.slider("Current Savings ($)", 0, 50000, 2000)
             groc = st.slider("Weekly Groceries ($)", 0, 500, 140)
             trans = st.slider("Weekly Transport ($)", 0, 300, 45)
             bills = st.slider("Monthly Utilities ($)", 0, 800, 150)
@@ -103,16 +101,16 @@ elif st.session_state.step == "inputs":
             months = st.number_input("Months in Sydney", min_value=1, value=12)
             meals = st.radio("Skipped meals to save?", ["No", "Yes"])
 
-        if st.form_submit_button("GENERATE DEEP REPORT"):
-            data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": addr, "savings": savings, "lit": lit, "months": months}
+        if st.form_submit_button("GENERATE XAI REPORT"):
+            data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": final_addr, "savings": savings, "lit": lit, "months": months}
             st.session_state.data = data
             sheet = connect_to_sheet()
             if sheet:
                 res = run_research_model(data)
                 sydney_time = datetime.utcnow() + timedelta(hours=11)
-                row = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, rent, inc, addr, uber, "...", "...", res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, "..."]
+                # Initial Append to Column A-R
+                row = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, rent, inc, final_addr, uber, "Pending", "Pending", res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, "Pending"]
                 sheet.append_row(row, value_input_option="USER_ENTERED")
-                st.session_state.current_row = len(sheet.get_all_values())
                 st.session_state.step = "results"
                 st.rerun()
 
@@ -125,34 +123,36 @@ elif st.session_state.step == "results":
     col2.metric("Runway", f"{ai['runway']} Mo.")
     col3.metric("Success", f"{ai['prob']}%")
 
-    st.markdown('<div class="res-card"><h3>🤖 Explainable AI Diagnosis (Detailed)</h3>', unsafe_allow_html=True)
+    st.markdown('<div class="res-card"><h3>🤖 Explainable AI Diagnosis</h3>', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="ai-bubble">
-    <b>1. Housing Load:</b> Your rent in <b>{st.session_state.data['addr']}</b> is <b>{ai['rent_pct']}%</b> of your income. In Sydney, staying under 30% is the gold standard for financial safety.
-    <br><br>
-    <b>2. Emergency Buffer:</b> If your income stopped today, your savings would cover your life for <b>{ai['runway']} months</b>. 
-    <br><br>
-    <b>3. Behavioral Insight:</b> UberEats/Dining is <b>{ai['uber_pct']}%</b> of your budget. This is your primary "leverage point" for improvement.
+    <b>Analysis:</b> Your housing load is <b>{ai['rent_pct']}%</b> of income. 
+    Your emergency survival runway is <b>{ai['runway']} months</b>. 
+    <b>Recommendation:</b> A 20% reduction in lifestyle spending improves your success probability to <b>{min(ai['prob']+12, 100.0)}%</b>.
     </div>
     """, unsafe_allow_html=True)
-    
-    st.info(f"**AI Prediction:** Reducing Lifestyle spending by $40/wk increases your success probability to **{min(ai['prob']+10, 100.0)}%**.")
     
     fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5)
     st.plotly_chart(fig_pie, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="res-card"><h3>🎯 Evaluation</h3>', unsafe_allow_html=True)
-    trust = st.select_slider("Trust AI logic?", options=["Low", "Neutral", "High"])
+    trust = st.select_slider("Trust level?", options=["Low", "Neutral", "High"])
     useful = st.select_slider("Is this enlightening?", options=["No", "Neutral", "Yes"])
-    intent = st.radio("Next step:", ["Reduce spending", "Cheaper rent", "No change"])
+    intent = st.radio("Behavioral Intent:", ["Reduce spending", "Cheaper rent", "No change"])
     
-    if st.button("SUBMIT & FINISH"):
+    if st.button("SUBMIT FINAL FEEDBACK"):
         sheet = connect_to_sheet()
-        if sheet and st.session_state.current_row:
-            sheet.update_cell(st.session_state.current_row, 7, trust)
-            sheet.update_cell(st.session_state.current_row, 8, useful)
-            sheet.update_cell(st.session_state.current_row, 18, intent)
-            st.success("Analysis Secured. Thank you!")
-            st.session_state.clear()
-            st.rerun()
+        if sheet:
+            try:
+                # Precision Search by Unique ID
+                cell = sheet.find(st.session_state.participant_id)
+                target_row = cell.row
+                sheet.update_cell(target_row, 7, trust)   # Column G
+                sheet.update_cell(target_row, 8, useful)  # Column H
+                sheet.update_cell(target_row, 18, intent) # Column R
+                st.success("Research Entry Secured.")
+                st.session_state.clear()
+                st.rerun()
+            except:
+                st.error("Submission error. Please try again.")
