@@ -31,20 +31,13 @@ def run_research_model(data):
     }
     m_exp = sum(exp_vals.values())
     surplus = m_inc - m_exp
-    
-    # Financial Runway (Survival in Months)
     savings = float(data['savings'])
     runway = round(savings / m_exp, 1) if m_exp > 0 else 12.0
-    
-    # Success Probability (Sigmoid Analysis)
     z = (surplus / (m_exp if m_exp > 0 else 1)) * 5 
     prob_success = round(1 / (1 + math.exp(-z)) * 100, 1) if surplus > 0 else round(max(5.0, 25.0 + (surplus/500)), 1)
-    
-    # Resilience Scoring
     lit_map = {"Novice": 30, "Intermediate": 65, "Advanced": 95}
     score = ((surplus / m_inc) * 40) + ((lit_map[data['lit']]) * 0.2) + (20 if data['p_supp'] == "Yes" else 0) + 30
     if data['meals'] == "Yes": score -= 25
-    
     return {
         "m_surplus": round(surplus, 2), 
         "score": int(min(max(score, 5), 100)),
@@ -74,7 +67,7 @@ if 'step' not in st.session_state: st.session_state.step = "home"
 
 if st.session_state.step == "home":
     st.title("🛡️ Resilience Intelligence Lab")
-    st.markdown('<div class="res-card"><h3>Assessment Overview</h3><p>This study evaluates the financial resilience of international students. Your data remains anonymous.</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="res-card"><h3>Assessment Overview</h3><p>Evaluates financial resilience of Sydney students using Explainable AI (XAI). All data is anonymous.</p></div>', unsafe_allow_html=True)
     if st.checkbox("I consent to participate in this study."):
         if st.button("INITIALIZE TERMINAL"):
             st.session_state.participant_id = f"RES-{random.randint(10000, 99999)}"
@@ -84,7 +77,16 @@ if st.session_state.step == "home":
 elif st.session_state.step == "inputs":
     st.subheader(f"📍 Research Profile: {st.session_state.participant_id}")
     with st.form("input_form"):
-        addr = st.selectbox("Current Suburb", ["Hurstville", "Parramatta", "CBD", "Randwick", "Strathfield", "Other"])
+        # EXPANDED SYDNEY SUBURBS LIST
+        suburbs = sorted([
+            "Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield", 
+            "Burwood", "Auburn", "Ashfield", "Kingsford", "Kensington", 
+            "Rhodes", "Macquarie Park", "Chatswood", "Wolli Creek", "Rockdale", 
+            "Blacktown", "Harris Park", "Lidcombe", "Bankstown", "Epping", 
+            "North Sydney", "Maroubra", "Ryde", "Campsie", "Lakemba", "Other"
+        ])
+        addr = st.selectbox("Select your Sydney Suburb", suburbs)
+        
         inc = st.slider("Monthly Income (AUD)", 500, 10000, 3200)
         rent = st.slider("Weekly Rent (AUD)", 100, 1500, 450)
         uber = st.slider("Weekly Lifestyle/Uber ($)", 0, 800, 120)
@@ -118,40 +120,39 @@ elif st.session_state.step == "results":
     ai = run_research_model(st.session_state.data)
     st.title("📊 Enlightened AI Report")
     
-    # KPI SECTION
     col1, col2, col3 = st.columns(3)
     col1.metric("Resilience", f"{ai['score']}/100")
     col2.metric("Runway", f"{ai['runway']} Mo.")
     col3.metric("Success", f"{ai['prob']}%")
 
-    # DETAILED EXPLANATION PANEL
     st.markdown('<div class="res-card"><h3>🤖 Explainable AI Diagnosis (Detailed)</h3>', unsafe_allow_html=True)
-    
     st.markdown(f"""
     <div class="ai-bubble">
-    <b>1. Housing Load Analysis:</b> Your rent is <b>{ai['rent_pct']}%</b> of your income. In Sydney's economic framework, any value exceeding 30% indicates <i>Rental Stress</i>. This reduces your "Financial Buffer," making you vulnerable to sudden cost-of-living increases.
+    <b>1. Housing Load:</b> Your rent in <b>{st.session_state.data['addr']}</b> is <b>{ai['rent_pct']}%</b> of your income. In Sydney, staying under 30% is the gold standard for financial safety.
     <br><br>
-    <b>2. Emergency Runway:</b> Based on your monthly expenses of ${round(sum(ai['exp_breakdown'].values()), 2)}, your current savings act as a safety net that would last exactly <b>{ai['runway']} months</b> in a zero-income scenario. 
+    <b>2. Emergency Buffer:</b> If your income stopped today, your savings would cover your life for <b>{ai['runway']} months</b>. 
     <br><br>
-    <b>3. Behavioral Leak:</b> Your lifestyle and dining expenses (UberEats) account for <b>{ai['uber_pct']}%</b> of your total income. This is identified as your primary 'discretionary pivot'—an area where a small change creates a large impact on your Resilience Score.
+    <b>3. Behavioral Insight:</b> UberEats/Dining is <b>{ai['uber_pct']}%</b> of your budget. This is your primary "leverage point" for improvement.
     </div>
     """, unsafe_allow_html=True)
     
-    # PREDICTIVE SUGGESTION
-    st.write("### 📈 Predictive Behavioral Nudge")
-    st.info(f"""
-    **AI Simulation Results:** If you reallocate just **$40 per week** from lifestyle spending to savings, the model predicts:
-    * Your Resilience Score improves to **{min(ai['score']+12, 100)}/100**.
-    * Your Success Probability rises to **{min(ai['prob']+10, 100.0)}%**.
-    * Your Survival Runway extends by **0.4 months**.
-    """)
+    st.info(f"**AI Prediction:** Reducing Lifestyle spending by $40/wk increases your success probability to **{min(ai['prob']+10, 100.0)}%**.")
+    
+    fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5)
+    st.plotly_chart(fig_pie, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # VISUALIZATION
-    fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5, title="Monthly Expenditure Flow")
-    st.plotly_chart(fig_pie, use_container_width=True)
-
-    # FINAL FEEDBACK
     st.markdown('<div class="res-card"><h3>🎯 Evaluation</h3>', unsafe_allow_html=True)
-    trust = st.select_slider("How much do you trust this AI's assessment?", options=["Low", "Neutral", "High"])
-    useful = st
+    trust = st.select_slider("Trust AI logic?", options=["Low", "Neutral", "High"])
+    useful = st.select_slider("Is this enlightening?", options=["No", "Neutral", "Yes"])
+    intent = st.radio("Next step:", ["Reduce spending", "Cheaper rent", "No change"])
+    
+    if st.button("SUBMIT & FINISH"):
+        sheet = connect_to_sheet()
+        if sheet and st.session_state.current_row:
+            sheet.update_cell(st.session_state.current_row, 7, trust)
+            sheet.update_cell(st.session_state.current_row, 8, useful)
+            sheet.update_cell(st.session_state.current_row, 18, intent)
+            st.success("Analysis Secured. Thank you!")
+            st.session_state.clear()
+            st.rerun()
