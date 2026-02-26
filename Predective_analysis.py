@@ -20,11 +20,11 @@ def connect_to_sheet():
 def run_research_model(data):
     m_inc = max(float(data['income']) + float(data['p_amt']), 1.0)
     exp_vals = {
-        "Housing (Rent)": float(data['rent']) * 4.33,
+        "Rent": float(data['rent']) * 4.33,
         "Groceries": float(data['groc']) * 4.33,
-        "Discretionary (UberEats)": float(data['uber']) * 4.33,
+        "UberEats/Dining": float(data['uber']) * 4.33,
         "Transport": float(data['trans']) * 4.33,
-        "Fixed Bills": float(data['bills']),
+        "Bills": float(data['bills']),
         "Remittance": float(data['remit'])
     }
     m_exp = sum(exp_vals.values())
@@ -38,18 +38,24 @@ def run_research_model(data):
         "m_surplus": round(surplus, 2), 
         "score": int(min(max(score, 5), 100)),
         "prob": min(prob_success, 100.0),
-        "uber_pct": round((exp_vals["Discretionary (UberEats)"] / m_inc) * 100, 1),
-        "rent_pct": round((exp_vals["Housing (Rent)"] / m_inc) * 100, 1),
+        "uber_pct": round((exp_vals["UberEats/Dining"] / m_inc) * 100, 1),
+        "rent_pct": round((exp_vals["Rent"] / m_inc) * 100, 1),
         "exp_breakdown": exp_vals
     }
 
-# --- 3. UI STYLE ---
+# --- 3. PREMIUM MOBILE CSS ---
 st.set_page_config(page_title="Resilience Lab AI", layout="centered")
 st.markdown("""
 <style>
-    .stApp { background-color: #F8FAFC; }
-    .res-card { background: white; padding: 25px; border-radius: 15px; border: 1px solid #E2E8F0; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .insight-box { background: #F1F5F9; border-left: 5px solid #2563EB; padding: 15px; border-radius: 8px; margin: 10px 0; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+    html, body, [class*="css"] { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }
+    
+    .main-header { background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; color: white; margin-bottom: 25px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .res-card { background: white; padding: 25px; border-radius: 20px; border: 1px solid #E5E7EB; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    .stat-val { font-size: 2.2rem; font-weight: 800; color: #1E3A8A; line-height: 1; }
+    .stat-lab { font-size: 0.85rem; color: #6B7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .insight-pill { background: #EFF6FF; color: #1E40AF; padding: 12px 18px; border-radius: 12px; border-left: 4px solid #3B82F6; margin: 10px 0; font-size: 0.95rem; line-height: 1.5; }
+    .stButton>button { width: 100%; border-radius: 12px; height: 3.5rem; background: #1E3A8A !important; color: white !important; font-weight: 700; border: none; transition: all 0.3s ease; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -58,87 +64,88 @@ if 'row_idx' not in st.session_state: st.session_state.row_idx = None
 
 # --- 4. NAVIGATION ---
 
-# PAGE 1: CONSENT GATEKEEPER
 if st.session_state.step == "home":
-    st.title("👋 Welcome to Resilience Lab")
-    st.markdown('<div class="res-card"><h3>Participant Consent Form</h3><p>By participating in this study, you acknowledge that your financial data will be analyzed anonymously for research purposes. You are free to withdraw at any time.</p></div>', unsafe_allow_html=True)
-    
-    consent_check = st.checkbox("I have read the briefing and I CONSENT to participate in this study.")
-    
-    if st.button("START MY AI DIAGNOSTIC", use_container_width=True):
-        if consent_check:
-            st.session_state.step = "inputs"
-            st.rerun()
-        else:
-            st.warning("⚠️ You must provide consent to proceed with the research.")
+    st.markdown('<div class="main-header"><h1>Resilience Lab</h1><p>Predictive AI Financial Diagnostic</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="res-card"><h3>Participant Consent</h3><p>This AI model predicts financial resilience based on discretionary spending behavior. By clicking start, you consent to anonymized data collection.</p></div>', unsafe_allow_html=True)
+    if st.button("BEGIN DIAGNOSTIC"):
+        st.session_state.step = "inputs"
+        st.rerun()
 
-# PAGE 2: DATA INPUTS (Your friend enters data here)
 elif st.session_state.step == "inputs":
+    st.markdown("### 📝 Financial Profile")
     with st.form("input_form"):
-        st.subheader("📍 Current Lifestyle Details")
-        addr = st.text_input("Sydney Suburb", value="Hurstville")
-        lit = st.select_slider("Financial Literacy", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
+        addr = st.text_input("Current Suburb", value="Hurstville")
         inc = st.number_input("Monthly Income ($)", value=3200)
-        p_supp = st.radio("Family Support Available?", ["No", "Yes"])
-        p_amt = st.number_input("Monthly Support ($)", value=0) if p_supp == "Yes" else 0
-        savings = st.number_input("Total Savings ($)", value=2000)
         rent = st.number_input("Weekly Rent ($)", value=450)
         uber = st.number_input("Weekly UberEats/Dining ($)", value=120)
-        groc = st.number_input("Weekly Groceries ($)", value=140)
-        trans = st.number_input("Weekly Transport ($)", value=45)
-        bills = st.number_input("Monthly Bills ($)", value=150)
-        remit = st.number_input("Monthly Remittance ($)", value=0)
-        months = st.number_input("Months in Sydney", value=12)
-        meals = st.radio("Have you skipped meals to save?", ["No", "Yes"])
+        
+        with st.expander("Additional Research Variables"):
+            lit = st.select_slider("Financial Literacy", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
+            p_supp = st.radio("Emergency Family Support?", ["No", "Yes"])
+            p_amt = st.number_input("Support Amount ($)", value=0) if p_supp == "Yes" else 0
+            savings = st.number_input("Emergency Savings ($)", value=2000)
+            groc = st.number_input("Weekly Groceries ($)", value=140)
+            trans = st.number_input("Weekly Transport ($)", value=45)
+            bills = st.number_input("Monthly Bills ($)", value=150)
+            remit = st.number_input("Monthly Remittance ($)", value=0)
+            months = st.number_input("Months in Sydney", value=12)
+            meals = st.radio("Skipped meals to save money?", ["No", "Yes"])
 
-        if st.form_submit_button("ANALYZE & SYNC TO RESEARCH DATABASE", use_container_width=True):
+        if st.form_submit_button("ANALYZE MY DATA"):
             data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": addr, "savings": savings, "lit": lit, "months": months}
             st.session_state.data = data
             sheet = connect_to_sheet()
             if sheet:
                 res = run_research_model(data)
-                # Map to A-R (18 Columns)
                 row = [datetime.now().strftime("%Y-%m-%d %H:%M"), "Yes", rent, inc, addr, uber, "Pending", "Pending", res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, "Pending"]
                 sheet.append_row(row, value_input_option="USER_ENTERED")
                 st.session_state.row_idx = len(sheet.get_all_values())
                 st.session_state.step = "results"
                 st.rerun()
 
-# PAGE 3: THE DEEP EXPLANATION DASHBOARD
 elif st.session_state.step == "results":
     ai = run_research_model(st.session_state.data)
     st.balloons()
     
-    st.header("📊 AI Resilience Report")
-    
-    st.markdown('<div class="res-card"><h3>🤖 AI Deep Reasoning (XAI)</h3>', unsafe_allow_html=True)
+    # Header Statistics
+    st.markdown("### 📊 Your Resilience Intelligence")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f'<div class="res-card"><p class="stat-lab">Resilience Score</p><p class="stat-val">{ai["score"]}%</p></div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown(f'<div class="res-card"><p class="stat-lab">Success Prob.</p><p class="stat-val">{ai["prob"]}%</p></div>', unsafe_allow_html=True)
+
+    # XAI Explanation
+    st.markdown('<div class="res-card"><h4>🤖 AI Explanation & Predictions</h4>', unsafe_allow_html=True)
     st.markdown(f"""
-    <div class="insight-box">
-    <b>Score: {ai['score']}/100</b> | <b>Success Prob: {ai['prob']}%</b>
-    </div>
-    <p><b>Analysis:</b> Your rent accounts for <b>{ai['rent_pct']}%</b> of your income. UberEats habits consume <b>{ai['uber_pct']}%</b>.
-    The AI predicts that a 20% reduction in discretionary spending will improve your score by 15 points.</p>
+    <div class="insight-pill"><b>Rent Impact:</b> Your housing consumes <b>{ai['rent_pct']}%</b> of your income. In Sydney, keeping this under 30% is critical for long-term stability.</div>
+    <div class="insight-pill"><b>Behavioral Leak:</b> Discretionary spending (UberEats) is currently <b>{ai['uber_pct']}%</b> of your budget.</div>
+    <div class="insight-pill" style="background:#ECFDF5; border-color:#10B981; color:#065F46;"><b>AI Prediction:</b> Reducing UberEats by just <b>$40/week</b> improves your Resilience Score to <b>{min(ai['score']+12, 100)}%</b> and your monthly surplus to <b>${round(ai['m_surplus']+173, 2)}</b>.</div>
     """, unsafe_allow_html=True)
-    
-    fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5)
-    fig_pie.update_layout(height=300, margin=dict(l=10, r=10, t=10, b=10))
-    st.plotly_chart(fig_pie, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # PAGE 4: BEHAVIORAL FEEDBACK (The "Last Question")
-    st.markdown('<div class="res-card"><h3>🎯 Behavioral Pivot</h3>', unsafe_allow_html=True)
-    trust = st.select_slider("Do you trust this AI score?", options=["Low", "Neutral", "High"], value="Neutral")
-    useful = st.select_slider("How useful was this feedback?", options=["Low", "Medium", "High"], value="Medium")
-    intent = st.radio("Based on this prediction, what is your next step?", ["Reduce UberEats spending", "Look for cheaper housing", "No changes"])
+    # Visualization
+    st.markdown('<div class="res-card"><h4>Monthly Spending Breakdown</h4>', unsafe_allow_html=True)
+    fig = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.6, color_discrete_sequence=px.colors.qualitative.Bold)
+    fig.update_layout(showlegend=True, margin=dict(l=0, r=0, t=0, b=0), height=350)
+    st.plotly_chart(fig, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Final Feedback
+    st.markdown('<div class="res-card" style="border: 2px solid #1E3A8A;"><h4>Final Research Feedback</h4>', unsafe_allow_html=True)
+    trust = st.select_slider("How much do you trust this score?", options=["Low", "Neutral", "High"], value="Neutral")
+    useful = st.select_slider("Is this feedback useful?", options=["Not Useful", "Neutral", "Very Useful"], value="Neutral")
+    intent = st.radio("Based on this AI, will you change your spending?", ["Yes, reduce UberEats", "Seek cheaper rent", "No changes"])
     
-    if st.button("SUBMIT FINAL FEEDBACK", use_container_width=True):
+    if st.button("SUBMIT FINAL FEEDBACK"):
         sheet = connect_to_sheet()
         if sheet and st.session_state.row_idx:
             sheet.update_cell(st.session_state.row_idx, 7, trust)
             sheet.update_cell(st.session_state.row_idx, 8, useful)
             sheet.update_cell(st.session_state.row_idx, 18, intent)
-            st.success("Session complete. Your data has been recorded for analysis.")
+            st.success("Research recorded! Thank you for your contribution.")
             st.session_state.step = "home"
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div style="text-align:center; color:#94A3B8; padding:30px;">Researcher: Sandeep Sharma | Excelsia College</div>', unsafe_allow_html=True)
+st.markdown('<p style="text-align:center; color:#9CA3AF; font-size:0.8rem; margin-top:40px;">Researcher: Sandeep Sharma | Excelsia College</p>', unsafe_allow_html=True)
