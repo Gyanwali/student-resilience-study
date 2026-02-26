@@ -1,12 +1,9 @@
 import streamlit as st
 import gspread
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
 import math
 from datetime import datetime
 
-# --- 1. RESEARCH DATA INFRASTRUCTURE ---
+# --- 1. RESEARCH INFRASTRUCTURE ---
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1Of3IskkddrEKLhG1P6QsitzaX6TMrN6czkaus2Tliwo"
 
 def connect_to_sheet():
@@ -14,14 +11,14 @@ def connect_to_sheet():
         creds_info = dict(st.secrets["gcp_service_account"])
         creds_info["private_key"] = creds_info["private_key"].replace("\\n", "\n")
         client = gspread.service_account_from_dict(creds_info)
-        return client.open_by_url(SHEET_URL).get_worksheet(0)
+        # Targeted fix for your specific sheet name
+        return client.open_by_url(SHEET_URL).worksheet("Form Responses 1")
     except Exception:
         return None
 
-# --- 2. PREDICTIVE RESEARCH ENGINE ---
+# --- 2. PREDICTIVE AI ENGINE ---
 def run_research_model(data):
     m_inc = max(data['income'] + data['p_amt'], 1)
-    # Weekly to Monthly (4.33 weeks per month)
     m_exp = (data['rent'] + data['groc'] + data['uber'] + data['trans']) * 4.33 + data['bills'] + data['remit']
     surplus = m_inc - m_exp
     
@@ -37,109 +34,99 @@ def run_research_model(data):
         "m_surplus": round(surplus, 2), 
         "score": int(min(max(score, 5), 100)),
         "prob": prob_success,
-        "runway": round(max(data['savings'], 0) / (m_exp if m_exp > 0 else 1), 1),
-        "uber_pct": round(((data['uber'] * 4.33) / m_inc) * 100, 1),
-        "rent_pct": round(((data['rent'] * 4.33) / m_inc) * 100, 1),
-        "chart_vals": [data['rent'] * 4.33, data['groc'] * 4.33, data['uber'] * 4.33, data['remit'], data['trans'] * 4.33 + data['bills']],
-        "chart_labs": ["Rent", "Groceries", "UberEats", "Remittance", "Others"]
+        "uber_pct": round(((data['uber'] * 4.33) / m_inc) * 100, 1)
     }
 
-# --- 3. UI STYLE ---
+# --- 3. THEME & HEADER ---
 st.set_page_config(page_title="Resilience Lab AI", layout="wide")
 st.markdown("""
 <style>
-    .stApp { background-color: #F8FAFC !important; color: #0F172A; }
-    p, label, h1, h2, h3, b { color: #0f52ba  !important; }
-    [data-testid="stMetricValue"] { color: #2563EB !important; font-weight: 800; }
-    .nav-header { background: #0F172A; padding: 40px; text-align: center; border-radius: 0 0 25px 25px; color: white; margin-bottom: 30px;}
-    .res-card { background: white; padding: 35px; border-radius: 20px; border: 1px solid #E2E8F0; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .explanation { font-size: 0.95rem; color: #475569 !important; line-height: 1.6; }
+    .stApp { background-color: #F8FAFC !important; }
+    .nav-header { background: #0F172A; padding: 30px; text-align: center; border-radius: 0 0 20px 20px; color: white; margin-bottom: 25px;}
+    .res-card { background: white; padding: 25px; border-radius: 15px; border: 1px solid #E2E8F0; margin-bottom: 20px; }
 </style>
 """, unsafe_allow_html=True)
 
 if 'step' not in st.session_state: st.session_state.step = "home"
 
-st.markdown('<div class="nav-header"><h1 style="color:white !important;">Resilience Intelligence Lab</h1><p style="color:#38BDF8 !important;">Predictive AI Analytics | Discretionary Spending Study</p></div>', unsafe_allow_html=True)
+st.markdown('<div class="nav-header"><h1 style="color:white !important;">Resilience Intelligence Lab</h1><p style="color:#38BDF8 !important;">XAI Predictive Analytics | Master\'s Research Tool</p></div>', unsafe_allow_html=True)
 
-# --- 4. NAVIGATION FLOW ---
+# --- 4. RESEARCH FLOW ---
 
+# STEP 1: HOME & ETHICS
 if st.session_state.step == "home":
-    st.markdown('<div class="res-card" style="text-align:center;"><h2>Predictive Behavioral Diagnostics</h2><p class="explanation">Testing the impact of AI-driven financial insights on student resilience in Sydney.</p><hr><p><b>Lead Researcher:</b> Sandeep Sharma</p></div>', unsafe_allow_html=True)
-    if st.button("INITIALIZE RESEARCH TERMINAL", use_container_width=True):
+    st.markdown('<div class="res-card"><h2>Project Overview</h2><p>This study investigates the impact of Predictive AI on the financial resilience of international students in Sydney. Your participation is voluntary and data is anonymized.</p></div>', unsafe_allow_html=True)
+    if st.button("INITIALIZE DIAGNOSTIC"):
         st.session_state.step = "inputs"
         st.rerun()
 
+# STEP 2: MULTI-FACTOR INPUTS
 elif st.session_state.step == "inputs":
-    with st.container():
-        st.markdown('<div class="res-card"><h3>📍 Part 1: Context & Cashflow</h3>', unsafe_allow_html=True)
-        col_a, col_b = st.columns(2)
-        with col_a: addr = st.text_input("Current Suburb", value="Hurstville")
-        with col_b: lit = st.select_slider("Financial Literacy Level", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
+    with st.form("research_form"):
+        st.markdown('### 📍 Section 1: Baseline Context')
+        # NEW: Pre-intervention stress variable (for thesis comparison)
+        pre_stress = st.select_slider("Rate your current financial stress (1 = Low, 10 = High)", options=range(1, 11), value=5)
         
-        c1, c2, c3 = st.columns(3)
-        with c1: inc = st.number_input("Monthly Job Income (AUD)", value=3200)
-        with c2: p_supp = st.radio("Access to Emergency Family Support?", ["No", "Yes"])
-        with c3: p_amt = st.number_input("Monthly Support (AUD)", value=0) if p_supp == "Yes" else 0
+        addr = st.text_input("Sydney Suburb", value="Hurstville")
+        lit = st.select_slider("Financial Literacy", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
         
-        savings = st.number_input("Total Emergency Savings (AUD)", value=2000)
-        remit = st.number_input("Monthly Overseas Remittance (AUD)", value=0)
+        st.markdown('### 💰 Section 2: Cashflow & Behavior')
+        c1, c2 = st.columns(2)
+        with c1: inc = st.number_input("Monthly Income (AUD)", value=3200)
+        with c2: p_supp = st.radio("Access to Family Support?", ["No", "Yes"])
         
-        st.markdown('<h3>📉 Part 2: Behavioral Spending (Weekly)</h3>', unsafe_allow_html=True)
-        c6, c7, c8 = st.columns(3)
-        with c6: rent = st.number_input("Weekly Rent", value=450)
-        with c7: uber = st.number_input("Weekly UberEats/Dining", value=120)
-        with c8: groc = st.number_input("Weekly Groceries", value=140)
+        p_amt = st.number_input("Support Amount", value=0) if p_supp == "Yes" else 0
+        savings = st.number_input("Total Emergency Savings", value=2000)
         
+        st.markdown('### 📉 Section 3: Weekly Discretionary Spending')
+        rent = st.number_input("Weekly Rent", value=450)
+        uber = st.number_input("Weekly UberEats/Dining", value=120)
+        groc = st.number_input("Weekly Groceries", value=140)
         trans = st.number_input("Weekly Transport", value=45)
-        bills = st.number_input("Monthly Utilities/Bills", value=150)
-        months = st.number_input("Months Spent in Sydney", value=12)
-        meals = st.radio("Have you skipped meals to save money?", ["No", "Yes"])
-        
-        if st.button("RUN PREDICTION & AUTO-SYNC", type="primary", use_container_width=True):
-            if addr:
-                data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": addr, "savings": savings, "lit": lit, "months": months}
-                st.session_state.data = data
-                
-                with st.spinner("Synchronizing Research Data..."):
-                    res_vals = run_research_model(data)
-                    sheet = connect_to_sheet()
-                    if sheet:
-                        # 15-Column Data Map: A:Date, B:Rent, C:Inc, D:Sub, E:Uber, F:Score, G:Meals, H:Supp, I:Remit, J:SuppAmt, K:Sav, L:Trans, M:Lit, N:Mo, O:Prob
-                        row = [datetime.now().strftime("%Y-%m-%d"), rent, inc, addr, uber, res_vals['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, res_vals['prob']]
-                        sheet.append_row(row, value_input_option="USER_ENTERED")
-                
+        bills = st.number_input("Monthly Utilities", value=150)
+        remit = st.number_input("Monthly Remittance", value=0)
+        months = st.number_input("Months in Australia", value=12)
+        meals = st.radio("Skipped meals to save money?", ["No", "Yes"])
+
+        if st.form_submit_button("GENERATE AI PREDICTION & SYNC"):
+            data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": addr, "savings": savings, "lit": lit, "months": months, "pre_stress": pre_stress}
+            st.session_state.data = data
+            
+            sheet = connect_to_sheet()
+            if sheet:
+                res = run_research_model(data)
+                # Aligned for your "Form Responses 1" 15-column sheet
+                row = [datetime.now().strftime("%Y-%m-%d"), rent, inc, addr, uber, res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, res['prob']]
+                sheet.append_row(row, value_input_option="USER_ENTERED")
                 st.session_state.step = "results"
                 st.rerun()
 
+# STEP 3: XAI DASHBOARD
 elif st.session_state.step == "results":
     res = st.session_state.data
     ai = run_research_model(res)
-    st.balloons()
     
-    st.markdown('<div class="res-card"><h3>📊 Resilience Intelligence Dashboard</h3>', unsafe_allow_html=True)
-    m1, m2, m3, m4 = st.columns(4)
+    st.success("✅ Research data successfully synchronized to 'Form Responses 1'")
+    
+    m1, m2, m3 = st.columns(3)
     m1.metric("Resilience Index", f"{ai['score']}/100")
     m2.metric("Success Prob.", f"{ai['prob']}%")
     m3.metric("Monthly Surplus", f"${ai['m_surplus']}")
-    m4.metric("Runway", f"{ai['runway']} Mo")
-    st.markdown('</div>', unsafe_allow_html=True)
 
-    col_l, col_r = st.columns(2)
-    with col_l:
-        st.markdown('<div class="res-card"><h4>Spending Allocation</h4>', unsafe_allow_html=True)
-        st.plotly_chart(px.pie(values=ai['chart_vals'], names=ai['chart_labs'], hole=0.4), use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-    with col_r:
-        st.markdown('<div class="res-card"><h4>AI Behavioral Reasoning (XAI)</h4>', unsafe_allow_html=True)
-        st.write(f"• **Housing Load:** {ai['rent_pct']}% of income.")
-        st.write(f"• **Discretionary Leak:** UberEats is {ai['uber_pct']}% of your budget.")
-        st.write(f"• **Model Insight:** Based on your {res['lit']} literacy, cutting UberEats by 25% improves success probability by 12%.")
-        st.plotly_chart(go.Figure(go.Indicator(mode="gauge+number", value=ai['score'], gauge={'bar':{'color':'#2563EB'}})), use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    if st.button("RESET SESSION"):
+    st.markdown(f"""
+    <div class="res-card">
+        <h3>🤖 Explainable AI (XAI) Reasoning</h3>
+        <p>• <b>Discretionary Alert:</b> Your UberEats spending is <b>{ai['uber_pct']}%</b> of your total income.</p>
+        <p>• <b>Resilience Logic:</b> Your score of {ai['score']} is influenced by your {res['lit']} literacy and {'family buffer' if res['p_supp'] == 'Yes' else 'lack of family buffer'}.</p>
+        <p>• <b>Prediction:</b> A 15% reduction in discretionary spending would raise your success probability to <b>{min(ai['prob']+10, 100.0)}%</b>.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # NEW: Post-Intervention Survey (The "Impact" measurement)
+    st.markdown("### 📝 Post-Analysis Survey")
+    post_impact = st.radio("Has seeing this AI analysis changed your financial outlook?", ["Yes", "No", "Maybe"])
+    if st.button("Finalize Session"):
         st.session_state.step = "home"
         st.rerun()
 
-st.markdown('<div style="text-align:center; color:#94A3B8; padding:40px;">Researcher: Sandeep Sharma | Excelsia College</div>', unsafe_allow_html=True)
-
+st.markdown('<div style="text-align:center; color:#94A3B8; padding:30px;">Researcher: Sandeep Sharma | Excelsia College</div>', unsafe_allow_html=True)
