@@ -7,7 +7,7 @@ import random
 import time
 from datetime import datetime, timedelta
 
-# --- 1. SECURE DATABASE ---
+# --- 1. SECURE DATABASE INFRASTRUCTURE ---
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1Of3IskkddrEKLhG1P6QsitzaX6TMrN6czkaus2Tliwo"
 
 def connect_to_sheet():
@@ -52,7 +52,7 @@ def run_research_model(data):
         "exp_breakdown": exp_vals
     }
 
-# --- 3. UI STYLE ---
+# --- 3. PREMIUM UI STYLE ---
 st.set_page_config(page_title="Resilience Lab AI", layout="centered")
 st.markdown("""
 <style>
@@ -65,14 +65,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-if 'step' not in st.session_state: st.session_state.step = "home"
+if 'step' not in st.session_state:
+    st.session_state.step = "home"
 
 # --- 4. NAVIGATION FLOW ---
 
 if st.session_state.step == "finished":
     st.balloons()
     st.title("✅ Research Data Secured")
-    st.markdown(f'<div class="ai-bubble">Thank you. ID: <b>{st.session_state.get("last_id")}</b> has been stored. You can now close this window.</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="ai-bubble">Thank you. ID: <b>{st.session_state.get("last_id")}</b> has been stored. You may now close this window.</div>', unsafe_allow_html=True)
     st.stop()
 
 if st.session_state.step == "home":
@@ -86,8 +87,7 @@ if st.session_state.step == "home":
 
 elif st.session_state.step == "inputs":
     st.subheader(f"📍 ID: {st.session_state.participant_id}")
-  
-   with st.form("input_form"):
+    with st.form("input_form"):
         suburbs = sorted(["Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield", "Burwood", "Auburn", "Kensington", "Rhodes", "Wolli Creek", "Other"])
         addr = st.selectbox("Suburb", suburbs)
         custom_sub = st.text_input("If 'Other', specify:")
@@ -109,7 +109,6 @@ elif st.session_state.step == "inputs":
             months = st.number_input("Months in Sydney", 1, 120, 12)
             meals = st.radio("Skipped meals?", ["No", "Yes"])
 
-        # --- THIS LINE (111) MUST BE ALIGNED WITH 'addr' ABOVE ---
         if st.form_submit_button("GENERATE REPORT"):
             data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": final_addr, "savings": savings, "lit": lit, "months": months}
             st.session_state.data = data
@@ -119,7 +118,7 @@ elif st.session_state.step == "inputs":
                 sydney_time = datetime.utcnow() + timedelta(hours=11)
                 row = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, rent, inc, final_addr, uber, "Pending", "Pending", res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, "Pending"]
                 
-                # Integrity Fix
+                # --- FIX: Anchor the row immediately ---
                 sheet.append_row(row)
                 st.session_state.target_row = len(sheet.get_all_values())
                 
@@ -130,54 +129,35 @@ elif st.session_state.step == "results":
     ai = run_research_model(st.session_state.data)
     st.title("📊 Resilience Dashboard")
     
-    c1, c2, c3 = st.columns(3)
-    c1.markdown(f'<div class="metric-card"><h3>{ai["score"]}</h3>Resilience</div>', unsafe_allow_html=True)
-    c2.markdown(f'<div class="metric-card"><h3>{ai["runway"]}</h3>Runway Mo.</div>', unsafe_allow_html=True)
-    c3.markdown(f'<div class="metric-card"><h3>{ai["prob"]}%</h3>Success</div>', unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+    col1.markdown(f'<div class="metric-card"><h3>{ai["score"]}</h3>Resilience</div>', unsafe_allow_html=True)
+    col2.markdown(f'<div class="metric-card"><h3>{ai["runway"]}</h3>Runway Mo.</div>', unsafe_allow_html=True)
+    col3.markdown(f'<div class="metric-card"><h3>{ai["prob"]}%</h3>Success</div>', unsafe_allow_html=True)
 
     st.markdown(f"""
     <div class="ai-bubble">
-    <b>Diagnosis:</b> Housing in <b>{st.session_state.data['addr']}</b> takes <b>{ai['rent_pct']}%</b> of income.
-    Your survival runway is <b>{ai['runway']} months</b>. 
-    Reducing lifestyle spending is your primary leverage for resilience.
+    <b>Analysis:</b> Your rent in <b>{st.session_state.data['addr']}</b> takes <b>{ai['rent_pct']}%</b> of income.<br>
+    Your survival runway is <b>{ai['runway']} months</b>.
     </div>
     """, unsafe_allow_html=True)
 
     st.plotly_chart(px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5), use_container_width=True)
 
     with st.form("feedback_form"):
+        st.subheader("🎯 Final Evaluation")
         trust = st.select_slider("Trust AI logic?", options=["Low", "Neutral", "High"])
         useful = st.select_slider("Enlightening?", options=["No", "Neutral", "Yes"])
         intent = st.radio("Next Action:", ["Reduce spending", "Search housing", "No change"])
         
         if st.form_submit_button("SUBMIT & LOCK"):
             sheet = connect_to_sheet()
-            if sheet:
-                success = False
-                # RETRY LOGIC: Try 3 times to find the row
-                for _ in range(3):
-                    try:
-                        time.sleep(1.5) 
-                        cell = sheet.find(st.session_state.participant_id)
-                        sheet.update_cell(cell.row, 7, trust)
-                        sheet.update_cell(cell.row, 8, useful)
-                        sheet.update_cell(cell.row, 18, intent)
-                        success = True
-                        break
-                    except:
-                        continue
-                
-                # FALLBACK: If find fails, append feedback as a linked entry
-                if not success:
-                    sydney_time = datetime.utcnow() + timedelta(hours=11)
-                    backup = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, "FALLBACK", "", "", "", trust, useful, "", "", "", "", "", "", "", "", "", intent]
-                    sheet.append_row(backup)
+            if sheet and 'target_row' in st.session_state:
+                # --- FIX: Use anchored row directly ---
+                row_idx = st.session_state.target_row
+                sheet.update_cell(row_idx, 7, trust)
+                sheet.update_cell(row_idx, 8, useful)
+                sheet.update_cell(row_idx, 18, intent)
                 
                 st.session_state.last_id = st.session_state.participant_id
                 st.session_state.step = "finished"
                 st.rerun()
-
-
-
-
-
