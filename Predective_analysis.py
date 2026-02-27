@@ -86,7 +86,7 @@ if st.session_state.step == "home":
 
 elif st.session_state.step == "inputs":
     st.subheader(f"📍 ID: {st.session_state.participant_id}")
-    with st.form("input_form"):
+   with st.form("input_form"):
         suburbs = sorted(["Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield", "Burwood", "Auburn", "Kensington", "Rhodes", "Wolli Creek", "Other"])
         addr = st.selectbox("Suburb", suburbs)
         custom_sub = st.text_input("If 'Other', specify:")
@@ -108,32 +108,18 @@ elif st.session_state.step == "inputs":
             months = st.number_input("Months in Sydney", 1, 120, 12)
             meals = st.radio("Skipped meals?", ["No", "Yes"])
 
-     if st.form_submit_button("GENERATE REPORT"):
-         data = {
-                "income": inc, "p_supp": p_supp, "p_amt": p_amt, 
-                "remit": remit, "rent": rent, "uber": uber, 
-                "groc": groc, "trans": trans, "bills": bills, 
-                "meals": meals, "addr": final_addr, 
-                "savings": savings, "lit": lit, "months": months
-            }
-            
+        # --- THIS LINE (111) MUST BE ALIGNED WITH 'addr' ABOVE ---
+        if st.form_submit_button("GENERATE REPORT"):
+            data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": final_addr, "savings": savings, "lit": lit, "months": months}
             st.session_state.data = data
             sheet = connect_to_sheet()
             if sheet:
                 res = run_research_model(data)
                 sydney_time = datetime.utcnow() + timedelta(hours=11)
-                row = [
-                    sydney_time.strftime("%Y-%m-%d %H:%M"), 
-                    st.session_state.participant_id, 
-                    rent, inc, final_addr, uber, 
-                    "Pending", "Pending", res['score'], 
-                    meals, p_supp, remit, p_amt, 
-                    savings, trans, lit, months, "Pending"
-                ]
+                row = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, rent, inc, final_addr, uber, "Pending", "Pending", res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, "Pending"]
                 
-                # --- DATA INTEGRITY FIX ---
+                # Integrity Fix
                 sheet.append_row(row)
-                # Capture exact row number for this session to prevent overwriting
                 st.session_state.target_row = len(sheet.get_all_values())
                 
                 st.session_state.step = "results"
@@ -189,6 +175,7 @@ elif st.session_state.step == "results":
                 st.session_state.last_id = st.session_state.participant_id
                 st.session_state.step = "finished"
                 st.rerun()
+
 
 
 
