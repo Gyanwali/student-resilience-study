@@ -49,22 +49,19 @@ def run_research_model(data):
         "runway": runway,
         "rent_pct": round((exp_vals["Housing (Rent)"] / m_inc) * 100, 1),
         "uber_pct": round((exp_vals["Lifestyle (Uber)"] / m_inc) * 100, 1),
-        "m_inc": m_inc,
-        "m_exp": m_exp,
         "exp_breakdown": exp_vals
     }
 
-# --- 3. PREMIUM RESEARCH UI ---
+# --- 3. UI STYLE ---
 st.set_page_config(page_title="Resilience Lab AI", layout="centered")
 st.markdown("""
 <style>
     .metric-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(128, 128, 128, 0.2); 
                    padding: 20px; border-radius: 15px; text-align: center; }
     .ai-bubble { background: rgba(37, 99, 235, 0.08); border-left: 5px solid #2563EB; padding: 20px; 
-                 border-radius: 12px; margin: 20px 0; line-height: 1.6; font-size: 1.1rem; }
+                 border-radius: 12px; margin: 20px 0; line-height: 1.6; }
     .stButton>button { width: 100%; border-radius: 12px; height: 3.5rem; background: #2563EB !important; 
                        color: white !important; font-weight: bold; }
-    h1, h2, h3 { color: #2563EB; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -74,46 +71,44 @@ if 'step' not in st.session_state: st.session_state.step = "home"
 
 if st.session_state.step == "finished":
     st.balloons()
-    st.title("✅ Research Entry Secured")
-    st.markdown(f'<div class="ai-bubble"><b>Thank you!</b> Your data (ID: {st.session_state.get("last_id")}) has been added to the Sydney Student Resilience dataset. You may now close this tab.</div>', unsafe_allow_html=True)
+    st.title("✅ Research Data Secured")
+    st.markdown(f'<div class="ai-bubble">Thank you. ID: <b>{st.session_state.get("last_id")}</b> has been stored. You can now close this window.</div>', unsafe_allow_html=True)
     st.stop()
 
 if st.session_state.step == "home":
-    st.title("🛡️ Resilience Intelligence Lab")
-    st.markdown("### Sydney Student Research Study")
-    st.info("This AI evaluates your 'Financial Shock Absorption'—your ability to survive economic changes in Sydney.")
-    if st.checkbox("I consent to participate in this anonymized study."):
-        if st.button("INITIALIZE AI DIAGNOSTIC"):
-            st.session_state.participant_id = f"RES-{random.randint(10000, 99999)}"
+    st.title("🛡️ Resilience Lab AI")
+    st.info("Sydney Student Financial Research Project")
+    if st.checkbox("I consent to participate in this study."):
+        if st.button("INITIALIZE AI"):
+            st.session_state.participant_id = f"RES-{random.randint(100000, 999999)}"
             st.session_state.step = "inputs"
             st.rerun()
 
 elif st.session_state.step == "inputs":
-    st.subheader(f"📍 Session ID: {st.session_state.participant_id}")
-    with st.form("data_entry"):
+    st.subheader(f"📍 ID: {st.session_state.participant_id}")
+    with st.form("input_form"):
         suburbs = sorted(["Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield", "Burwood", "Auburn", "Kensington", "Rhodes", "Wolli Creek", "Other"])
-        addr = st.selectbox("Current Suburb", suburbs)
-        custom_sub = st.text_input("If 'Other', type here:")
+        addr = st.selectbox("Suburb", suburbs)
+        custom_sub = st.text_input("If 'Other', specify:")
         final_addr = custom_sub if addr == "Other" else addr
         
-        c1, c2 = st.columns(2)
-        inc = c1.number_input("Monthly Income ($)", 500, 10000, 3200)
-        rent = c2.number_input("Weekly Rent ($)", 100, 1500, 450)
-        uber = st.slider("Weekly Lifestyle/UberEats ($)", 0, 800, 120)
+        inc = st.number_input("Income ($/mo)", 500, 10000, 3200)
+        rent = st.number_input("Rent ($/wk)", 100, 1500, 450)
+        uber = st.slider("Uber/Lifestyle ($/wk)", 0, 800, 120)
         
-        with st.expander("Secondary Resilience Metrics"):
-            lit = st.select_slider("Financial Literacy", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
-            p_supp = st.radio("Access to Emergency Family Support?", ["No", "Yes"])
-            p_amt = st.number_input("Monthly Support Available ($)", 0, 5000, 0)
-            savings = st.number_input("Total Emergency Savings ($)", 0, 50000, 2000)
-            groc = st.number_input("Weekly Groceries ($)", 0, 500, 140)
-            trans = st.number_input("Weekly Transport ($)", 0, 300, 45)
-            bills = st.number_input("Monthly Utilities/Bills ($)", 0, 800, 150)
-            remit = st.number_input("Monthly Remittance Sent Home ($)", 0, 3000, 0)
-            months = st.number_input("Months Living in Sydney", 1, 120, 12)
-            meals = st.radio("Have you skipped meals to save money?", ["No", "Yes"])
+        with st.expander("More Data Points"):
+            lit = st.select_slider("Literacy", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
+            p_supp = st.radio("Family Support?", ["No", "Yes"])
+            p_amt = st.number_input("Support Amt ($/mo)", 0, 5000, 0)
+            savings = st.number_input("Total Savings ($)", 0, 50000, 2000)
+            groc = st.number_input("Groceries ($/wk)", 0, 500, 140)
+            trans = st.number_input("Transport ($/wk)", 0, 300, 45)
+            bills = st.number_input("Utilities ($/mo)", 0, 800, 150)
+            remit = st.number_input("Remittance ($/mo)", 0, 3000, 0)
+            months = st.number_input("Months in Sydney", 1, 120, 12)
+            meals = st.radio("Skipped meals?", ["No", "Yes"])
 
-        if st.form_submit_button("GENERATE ENLIGHTENED REPORT"):
+        if st.form_submit_button("GENERATE REPORT"):
             data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": final_addr, "savings": savings, "lit": lit, "months": months}
             st.session_state.data = data
             sheet = connect_to_sheet()
@@ -127,58 +122,51 @@ elif st.session_state.step == "inputs":
 
 elif st.session_state.step == "results":
     ai = run_research_model(st.session_state.data)
-    st.title("📊 Enlightened Resilience Report")
+    st.title("📊 Resilience Dashboard")
     
-    # INFOGRAPHIC 1: METRIC GRID
-    col1, col2, col3 = st.columns(3)
-    col1.markdown(f'<div class="metric-card"><h3>{ai["score"]}</h3>Resilience Score</div>', unsafe_allow_html=True)
-    col2.markdown(f'<div class="metric-card"><h3>{ai["runway"]}</h3>Survival Mo.</div>', unsafe_allow_html=True)
-    col3.markdown(f'<div class="metric-card"><h3>{ai["prob"]}%</h3>Success Rate</div>', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    c1.markdown(f'<div class="metric-card"><h3>{ai["score"]}</h3>Resilience</div>', unsafe_allow_html=True)
+    c2.markdown(f'<div class="metric-card"><h3>{ai["runway"]}</h3>Runway Mo.</div>', unsafe_allow_html=True)
+    c3.markdown(f'<div class="metric-card"><h3>{ai["prob"]}%</h3>Success</div>', unsafe_allow_html=True)
 
-    # INFOGRAPHIC 2: GAUGE CHART
-    fig_gauge = go.Figure(go.Indicator(
-        mode = "gauge+number", value = ai['score'],
-        domain = {'x': [0, 1], 'y': [0, 1]},
-        title = {'text': "Resilience Health Index", 'font': {'size': 20}},
-        gauge = {'axis': {'range': [0, 100]}, 'bar': {'color': "#2563EB"}}
-    ))
-    fig_gauge.update_layout(height=300, margin=dict(l=20, r=20, t=50, b=20))
-    st.plotly_chart(fig_gauge, use_container_width=True)
-
-    # AI EXPLANATION
     st.markdown(f"""
     <div class="ai-bubble">
-    <b>🤖 Deep Analysis for {st.session_state.participant_id}:</b><br><br>
-    Your housing load in <b>{st.session_state.data['addr']}</b> consumes <b>{ai['rent_pct']}%</b> of your total income. 
-    In Sydney, exceeding 30% is classified as "Rental Stress."<br><br>
-    <b>Survival Runway:</b> If your income stopped today, your savings would last <b>{ai['runway']} months</b>. 
-    Your surplus is <b>${ai['m_surplus']}</b>. Increasing this by reducing lifestyle spending (currently {ai['uber_pct']}% of income) 
-    is your fastest path to a higher resilience score.
+    <b>Diagnosis:</b> Housing in <b>{st.session_state.data['addr']}</b> takes <b>{ai['rent_pct']}%</b> of income.
+    Your survival runway is <b>{ai['runway']} months</b>. 
+    Reducing lifestyle spending is your primary leverage for resilience.
     </div>
     """, unsafe_allow_html=True)
 
-    # INFOGRAPHIC 3: EXPENSE PIE
-    fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), 
-                     title="Monthly Expenditure Breakdown", hole=0.4, color_discrete_sequence=px.colors.sequential.RdBu)
-    st.plotly_chart(fig_pie, use_container_width=True)
+    st.plotly_chart(px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()), hole=0.5), use_container_width=True)
 
-    # FINAL SYNC FORM
-    with st.form("final_eval"):
-        st.subheader("🎯 Research Validation")
-        trust = st.select_slider("Do you trust the AI logic?", options=["Low", "Neutral", "High"])
-        useful = st.select_slider("Is this report enlightening?", options=["No", "Neutral", "Yes"])
-        intent = st.radio("Next Action:", ["Reduce Spending", "Search Cheaper Housing", "No Change"])
+    with st.form("feedback_form"):
+        trust = st.select_slider("Trust AI logic?", options=["Low", "Neutral", "High"])
+        useful = st.select_slider("Enlightening?", options=["No", "Neutral", "Yes"])
+        intent = st.radio("Next Action:", ["Reduce spending", "Search housing", "No change"])
         
-        if st.form_submit_button("SUBMIT & LOCK DATA"):
+        if st.form_submit_button("SUBMIT & LOCK"):
             sheet = connect_to_sheet()
             if sheet:
-                try:
-                    cell = sheet.find(st.session_state.participant_id)
-                    sheet.update_cell(cell.row, 7, trust)
-                    sheet.update_cell(cell.row, 8, useful)
-                    sheet.update_cell(cell.row, 18, intent)
-                    st.session_state.last_id = st.session_state.participant_id
-                    st.session_state.step = "finished"
-                    st.rerun()
-                except:
-                    st.error("Sync error. Please try once more.")
+                success = False
+                # RETRY LOGIC: Try 3 times to find the row
+                for _ in range(3):
+                    try:
+                        time.sleep(1.5) 
+                        cell = sheet.find(st.session_state.participant_id)
+                        sheet.update_cell(cell.row, 7, trust)
+                        sheet.update_cell(cell.row, 8, useful)
+                        sheet.update_cell(cell.row, 18, intent)
+                        success = True
+                        break
+                    except:
+                        continue
+                
+                # FALLBACK: If find fails, append feedback as a linked entry
+                if not success:
+                    sydney_time = datetime.utcnow() + timedelta(hours=11)
+                    backup = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, "FALLBACK", "", "", "", trust, useful, "", "", "", "", "", "", "", "", "", intent]
+                    sheet.append_row(backup)
+                
+                st.session_state.last_id = st.session_state.participant_id
+                st.session_state.step = "finished"
+                st.rerun()
