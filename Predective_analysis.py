@@ -109,13 +109,14 @@ elif st.session_state.step == "inputs":
             meals = st.radio("Skipped meals?", ["No", "Yes"])
 
      if st.form_submit_button("GENERATE REPORT"):
-            data = {
+         data = {
                 "income": inc, "p_supp": p_supp, "p_amt": p_amt, 
                 "remit": remit, "rent": rent, "uber": uber, 
                 "groc": groc, "trans": trans, "bills": bills, 
                 "meals": meals, "addr": final_addr, 
                 "savings": savings, "lit": lit, "months": months
             }
+            
             st.session_state.data = data
             sheet = connect_to_sheet()
             if sheet:
@@ -188,5 +189,6 @@ elif st.session_state.step == "results":
                 st.session_state.last_id = st.session_state.participant_id
                 st.session_state.step = "finished"
                 st.rerun()
+
 
 
