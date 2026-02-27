@@ -108,7 +108,7 @@ elif st.session_state.step == "inputs":
             months = st.number_input("Months in Sydney", 1, 120, 12)
             meals = st.radio("Skipped meals?", ["No", "Yes"])
 
-        if st.form_submit_button("GENERATE REPORT"):
+      if st.form_submit_button("GENERATE REPORT"):
             data = {"income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit, "rent": rent, "uber": uber, "groc": groc, "trans": trans, "bills": bills, "meals": meals, "addr": final_addr, "savings": savings, "lit": lit, "months": months}
             st.session_state.data = data
             sheet = connect_to_sheet()
@@ -116,7 +116,13 @@ elif st.session_state.step == "inputs":
                 res = run_research_model(data)
                 sydney_time = datetime.utcnow() + timedelta(hours=11)
                 row = [sydney_time.strftime("%Y-%m-%d %H:%M"), st.session_state.participant_id, rent, inc, final_addr, uber, "Pending", "Pending", res['score'], meals, p_supp, remit, p_amt, savings, trans, lit, months, "Pending"]
+                
+                # --- FIX STARTS HERE ---
                 sheet.append_row(row)
+                # Capture the exact row number for this specific user session
+                st.session_state.target_row = len(sheet.get_all_values())
+                # --- FIX ENDS HERE ---
+                
                 st.session_state.step = "results"
                 st.rerun()
 
@@ -170,3 +176,4 @@ elif st.session_state.step == "results":
                 st.session_state.last_id = st.session_state.participant_id
                 st.session_state.step = "finished"
                 st.rerun()
+
