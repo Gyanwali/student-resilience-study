@@ -86,6 +86,7 @@ if st.session_state.step == "home":
 
 elif st.session_state.step == "inputs":
     st.subheader(f"📍 ID: {st.session_state.participant_id}")
+  
    with st.form("input_form"):
         suburbs = sorted(["Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield", "Burwood", "Auburn", "Kensington", "Rhodes", "Wolli Creek", "Other"])
         addr = st.selectbox("Suburb", suburbs)
@@ -175,6 +176,7 @@ elif st.session_state.step == "results":
                 st.session_state.last_id = st.session_state.participant_id
                 st.session_state.step = "finished"
                 st.rerun()
+
 
 
 
