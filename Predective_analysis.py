@@ -425,43 +425,52 @@ elif st.session_state.step == "inputs":
         meals = st.radio("Have you skipped meals due to lack of money in the past month?", ["No", "Yes"], horizontal=True)
    st.markdown("---")
         submitted = st.form_submit_button("⚡  GENERATE AI REPORT")
-if submitted and not st.session_state.get("data_saved"):
-    if addr == "Other" and not final_addr:
-        st.warning("Please specify your suburb.")
-    else:
-        data = {
-            "income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit,
-            "rent": rent, "uber": uber, "groc": groc, "trans": trans,
-            "bills": bills, "meals": meals, "addr": final_addr,
-            "savings": savings, "lit": lit, "months": months,
-        }
-        res = run_model(data)
-        st.session_state.data = data
-        st.session_state.res  = res
-        with st.spinner("Saving to research database..."):
-            sheet = connect_to_sheet()
-            if sheet:
-                sydney_time = datetime.utcnow() + timedelta(hours=11)
-                row = [
-                    st.session_state.participant_id,
-                    sydney_time.strftime("%d %b %Y  %I:%M %p"),
-                    "Yes",
-                    rent, inc, final_addr, uber,
-                    "", "",
-                    res['score'], meals, p_supp, remit,
-                    p_amt, savings, trans, lit, months,
-                    "",
-                ]
-                try:
-                    st.session_state.target_row = append_and_get_row(sheet, row)
-                    st.session_state.data_saved = True
-                except Exception as e:
-                    st.error(f"❌ Failed to save: {e}")
+elif st.session_state.step == "inputs":
+    st.markdown('<div class="step-bar">...</div>', unsafe_allow_html=True)
+    # ... all your inputs code ...
+
+    with st.form("input_form"):
+        # ... all form fields ...
+        st.markdown("---")
+        submitted = st.form_submit_button("⚡  GENERATE AI REPORT")
+
+    if submitted and not st.session_state.get("data_saved"):  # ← 4 spaces
+        if addr == "Other" and not final_addr:                 # ← 8 spaces
+            st.warning("Please specify your suburb.")
+        else:                                                  # ← 8 spaces
+            data = {
+                "income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit,
+                "rent": rent, "uber": uber, "groc": groc, "trans": trans,
+                "bills": bills, "meals": meals, "addr": final_addr,
+                "savings": savings, "lit": lit, "months": months,
+            }
+            res = run_model(data)
+            st.session_state.data = data
+            st.session_state.res  = res
+            with st.spinner("Saving to research database..."):
+                sheet = connect_to_sheet()
+                if sheet:
+                    sydney_time = datetime.utcnow() + timedelta(hours=11)
+                    row = [
+                        st.session_state.participant_id,
+                        sydney_time.strftime("%d %b %Y  %I:%M %p"),
+                        "Yes",
+                        rent, inc, final_addr, uber,
+                        "", "",
+                        res['score'], meals, p_supp, remit,
+                        p_amt, savings, trans, lit, months,
+                        "",
+                    ]
+                    try:
+                        st.session_state.target_row = append_and_get_row(sheet, row)
+                        st.session_state.data_saved = True
+                    except Exception as e:
+                        st.error(f"❌ Failed to save: {e}")
+                        st.stop()
+                else:
                     st.stop()
-            else:
-                st.stop()
-        st.session_state.step = "results"
-        st.rerun()
+            st.session_state.step = "results"
+            st.rerun()
 # ══════════════════════════════════════════════
 # RESULTS
 # ══════════════════════════════════════════════
@@ -490,11 +499,9 @@ elif st.session_state.step == "results":
             <div class="metric-label">Stability Prob.</div>
         </div>
     </div>""", unsafe_allow_html=True)
-
     flags_html = "".join(
         f"<li style='margin:7px 0'>{f}</li>" for f in ai['flags']
     ) if ai['flags'] else "<li>✅ No critical stress indicators detected.</li>"
-
     st.markdown(f"""
     <div class="analysis-box">
         <b>AI Analysis — {data['addr']}</b><br><br>
@@ -789,6 +796,7 @@ elif st.session_state.step == "results":
                 st.error("⚠️ Row reference lost — please restart the survey.")
             else:
                 st.error("❌ Could not connect to sheet.")
+
 
 
 
