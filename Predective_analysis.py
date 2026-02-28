@@ -251,8 +251,11 @@ def connect_to_sheet():
 
 
 def append_and_get_row(sheet, row_data):
-    """Append a row and return the exact row index parsed from Google's response."""
-    response = sheet.append_row(row_data, value_input_option="USER_ENTERED")
+    response = sheet.append_row(
+        row_data,
+        value_input_option="USER_ENTERED",
+        insert_data_option="INSERT_ROWS"   # ← forces a brand new row every time
+    )
     updated_range = response["updates"]["updatedRange"]
     match = re.search(r':.*?(\d+)$', updated_range)
     return int(match.group(1)) if match else None
@@ -801,3 +804,4 @@ elif st.session_state.step == "results":
                 st.error("⚠️ Row reference lost — please restart the survey.")
             else:
                 st.error("❌ Could not connect to sheet.")
+
