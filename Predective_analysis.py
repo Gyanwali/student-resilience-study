@@ -447,7 +447,7 @@ elif st.session_state.step == "inputs":
                 sydney_time = datetime.utcnow() + timedelta(hours=11)
                 row = [
                     st.session_state.participant_id,
-                    sydney_time.strftime("%d %b %Y  %I:%M %p"),  # ← clean timestamp
+                    sydney_time.strftime("%d %b %Y  %I:%M %p"),
                     "Yes",
                     rent, inc, final_addr, uber,
                     "", "",
@@ -457,7 +457,7 @@ elif st.session_state.step == "inputs":
                 ]
                 try:
                     st.session_state.target_row = append_and_get_row(sheet, row)
-                    st.session_state.data_saved = True  # ← lock so rerun can't fire twice
+                    st.session_state.data_saved = True
                 except Exception as e:
                     st.error(f"❌ Failed to save: {e}")
                     st.stop()
@@ -794,5 +794,6 @@ elif st.session_state.step == "results":
                 st.error("⚠️ Row reference lost — please restart the survey.")
             else:
                 st.error("❌ Could not connect to sheet.")
+
 
 
