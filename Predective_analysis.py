@@ -423,11 +423,9 @@ elif st.session_state.step == "inputs":
         with col2: months = st.number_input("Months Living in Sydney", min_value=1, max_value=120, value=12)
 
         meals = st.radio("Have you skipped meals due to lack of money in the past month?", ["No", "Yes"], horizontal=True)
-
-        st.markdown("---")
+   st.markdown("---")
         submitted = st.form_submit_button("⚡  GENERATE AI REPORT")
-
-    if submitted and not st.session_state.get("data_saved"):
+if submitted and not st.session_state.get("data_saved"):
     if addr == "Other" and not final_addr:
         st.warning("Please specify your suburb.")
     else:
@@ -440,7 +438,6 @@ elif st.session_state.step == "inputs":
         res = run_model(data)
         st.session_state.data = data
         st.session_state.res  = res
-
         with st.spinner("Saving to research database..."):
             sheet = connect_to_sheet()
             if sheet:
@@ -463,10 +460,8 @@ elif st.session_state.step == "inputs":
                     st.stop()
             else:
                 st.stop()
-
         st.session_state.step = "results"
         st.rerun()
-
 # ══════════════════════════════════════════════
 # RESULTS
 # ══════════════════════════════════════════════
@@ -794,6 +789,7 @@ elif st.session_state.step == "results":
                 st.error("⚠️ Row reference lost — please restart the survey.")
             else:
                 st.error("❌ Could not connect to sheet.")
+
 
 
 
