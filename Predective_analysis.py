@@ -17,32 +17,29 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 
-# ── Sheet column map (1-indexed) ──────────────
-# Col 1  → Unique_ID
-# Col 2  → Timestamp
-# Col 3  → Consent
-# Col 4  → Weekly Rent (AUD)
-# Col 5  → Monthly Income (AUD)
-# Col 6  → Sydney Area
-# Col 7  → Weekly UberEats
-# Col 8  → Trust Level          ← filled after feedback
-# Col 9  → AI Usefulness        ← filled after feedback
-# Col 10 → Resilience Score
-# Col 11 → Skipped Meals
-# Col 12 → Parental Support Y/N
-# Col 13 → Monthly Remittance
-# Col 14 → Parental Support Amt
-# Col 15 → Emergency Savings
-# Col 16 → Weekly Transport
-# Col 17 → Financial Literacy
-# Col 18 → Months in Sydney
-# Col 19 → Behavioural Intent   ← filled after feedback
+# Sheet column order (1-indexed):
+# 1  Unique_ID
+# 2  Timestamp
+# 3  Consent
+# 4  Weekly Rent (AUD)
+# 5  Monthly Income (AUD)
+# 6  Sydney Area
+# 7  Weekly UberEats
+# 8  Trust Level          ← filled after feedback
+# 9  AI Usefulness        ← filled after feedback
+# 10 Resilience Score
+# 11 Skipped Meals
+# 12 Parental Support Y/N
+# 13 Monthly Remittance
+# 14 Parental Support Amt
+# 15 Emergency Savings
+# 16 Weekly Transport
+# 17 Financial Literacy
+# 18 Months in Sydney
+# 19 Behavioural Intent   ← filled after feedback
 
 st.set_page_config(page_title="Resilience Lab AI", page_icon="🛡️", layout="centered")
 
-# ──────────────────────────────────────────────
-# COLOUR PALETTE  (warm amber-gold on deep navy)
-# ──────────────────────────────────────────────
 COLORS = ["#f59e0b", "#e879f9", "#67e8f9", "#4ade80", "#fb7185", "#a78bfa"]
 
 st.markdown("""
@@ -50,157 +47,120 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
-
 .stApp { background: #080c18; color: #e2e8f0; }
 #MainMenu, footer, header { visibility: hidden; }
 
 .stApp::before {
-    content: '';
-    display: block;
-    height: 3px;
+    content: ''; display: block; height: 3px;
     background: linear-gradient(90deg, #f59e0b, #e879f9, #67e8f9);
     position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
 }
-
 .top-badge {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem; color: #f59e0b;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #f59e0b;
     letter-spacing: 0.22em; text-transform: uppercase;
-    border: 1px solid #f59e0b44;
-    background: #f59e0b11;
-    display: inline-block;
-    padding: 5px 14px; border-radius: 3px; margin-bottom: 1.2rem;
+    border: 1px solid #f59e0b44; background: #f59e0b11;
+    display: inline-block; padding: 5px 14px; border-radius: 3px; margin-bottom: 1.2rem;
 }
-
 .hero-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 3rem; font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif; font-size: 3rem; font-weight: 700;
     background: linear-gradient(135deg, #f59e0b 0%, #e879f9 60%, #67e8f9 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     line-height: 1.15; margin-bottom: 0.6rem;
 }
 .hero-sub {
-    font-size: 1rem; color: #7c93b8;
-    margin-bottom: 2rem; font-weight: 300; line-height: 1.6;
+    font-size: 1rem; color: #7c93b8; margin-bottom: 2rem; font-weight: 300; line-height: 1.6;
 }
-
 .card {
-    background: #0f1629;
-    border: 1px solid #1e2d4a;
+    background: #0f1629; border: 1px solid #1e2d4a;
     border-radius: 14px; padding: 22px 24px; margin-bottom: 1rem;
 }
-
-.metric-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 14px; margin: 1.5rem 0;
-}
+.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 1.5rem 0; }
 .metric-card {
-    background: #0f1629;
-    border: 1px solid #1e2d4a;
+    background: #0f1629; border: 1px solid #1e2d4a;
     border-radius: 12px; padding: 22px 14px;
     text-align: center; position: relative; overflow: hidden;
 }
 .metric-card::after {
-    content: ''; position: absolute;
-    bottom: 0; left: 0; right: 0; height: 2px;
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, #f59e0b, #e879f9);
 }
 .metric-value {
-    font-family: 'Space Mono', monospace;
-    font-size: 2.1rem; font-weight: 700;
+    font-family: 'Space Mono', monospace; font-size: 2.1rem; font-weight: 700;
     color: #f59e0b; display: block; line-height: 1;
 }
-.metric-label {
-    font-size: 0.68rem; color: #4a6080;
-    text-transform: uppercase; letter-spacing: 0.12em; margin-top: 8px;
-}
-
+.metric-label { font-size: 0.68rem; color: #4a6080; text-transform: uppercase; letter-spacing: 0.12em; margin-top: 8px; }
 .analysis-box {
     background: linear-gradient(135deg, #0c1524, #0f1d35);
-    border: 1px solid #1e3a5f;
-    border-left: 4px solid #f59e0b;
-    border-radius: 12px; padding: 22px 26px;
-    margin: 1.5rem 0; line-height: 1.85;
-    color: #9ab3cc; font-size: 0.93rem;
+    border: 1px solid #1e3a5f; border-left: 4px solid #f59e0b;
+    border-radius: 12px; padding: 22px 26px; margin: 1.5rem 0;
+    line-height: 1.85; color: #9ab3cc; font-size: 0.93rem;
 }
 .analysis-box b { color: #e2e8f0; }
 .highlight      { color: #f59e0b; font-family: 'Space Mono', monospace; font-weight: 700; }
 .highlight-pink { color: #e879f9; font-family: 'Space Mono', monospace; font-weight: 700; }
 .highlight-cyan { color: #67e8f9; font-family: 'Space Mono', monospace; font-weight: 700; }
-
 .pid-chip {
-    font-family: 'Space Mono', monospace;
-    background: #0f1629; border: 1px solid #1e2d4a;
-    border-radius: 6px; padding: 7px 16px;
-    font-size: 0.75rem; color: #f59e0b;
+    font-family: 'Space Mono', monospace; background: #0f1629; border: 1px solid #1e2d4a;
+    border-radius: 6px; padding: 7px 16px; font-size: 0.75rem; color: #f59e0b;
     display: inline-block; margin-bottom: 1.5rem; letter-spacing: 0.08em;
 }
-
 .step-bar { display: flex; gap: 6px; margin-bottom: 2.2rem; }
 .step        { flex: 1; height: 3px; border-radius: 2px; background: #1e2d4a; }
 .step.done   { background: #f59e0b; }
 .step.active { background: linear-gradient(90deg, #f59e0b, #e879f9); }
-
 .section-header {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.68rem; color: #3a5070;
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #3a5070;
     text-transform: uppercase; letter-spacing: 0.18em;
-    margin: 1.8rem 0 0.8rem 0;
-    border-bottom: 1px solid #1e2d4a; padding-bottom: 8px;
+    margin: 1.8rem 0 0.8rem 0; border-bottom: 1px solid #1e2d4a; padding-bottom: 8px;
 }
-
 .success-id {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.3rem; color: #f59e0b;
-    background: #0f1629; border: 1px solid #f59e0b33;
-    border-radius: 10px; padding: 18px 24px;
-    text-align: center; margin: 1.5rem 0; letter-spacing: 0.06em;
+    font-family: 'Space Mono', monospace; font-size: 1.3rem; color: #f59e0b;
+    background: #0f1629; border: 1px solid #f59e0b33; border-radius: 10px;
+    padding: 18px 24px; text-align: center; margin: 1.5rem 0; letter-spacing: 0.06em;
 }
-
+.locked-box {
+    background: linear-gradient(135deg, #1a0a00, #2a1200);
+    border: 1px solid #f59e0b55; border-left: 4px solid #f59e0b;
+    border-radius: 12px; padding: 22px 26px; margin: 1.5rem 0;
+    line-height: 1.8; color: #9ab3cc; font-size: 0.93rem; text-align: center;
+}
+.locked-box .lock-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+.locked-box .lock-title {
+    font-family: 'Space Mono', monospace; font-size: 1.1rem;
+    color: #f59e0b; font-weight: 700; margin-bottom: 8px;
+}
 .insight-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin: 1rem 0; }
-.insight-card {
-    background: #0f1629; border: 1px solid #1e2d4a;
-    border-radius: 10px; padding: 16px 18px;
-}
+.insight-card { background: #0f1629; border: 1px solid #1e2d4a; border-radius: 10px; padding: 16px 18px; }
 .insight-card .i-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem; color: #3a5070;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #3a5070;
     text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;
 }
 .insight-card .i-value { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #f1f5f9; }
 .insight-card .i-sub   { font-size: 0.76rem; color: #4a6080; margin-top: 4px; }
-
 .formula-box {
-    background: #080c18; border: 1px solid #1e2d4a;
-    border-radius: 10px; padding: 16px 20px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.78rem; color: #7c93b8;
+    background: #080c18; border: 1px solid #1e2d4a; border-radius: 10px; padding: 16px 20px;
+    font-family: 'Space Mono', monospace; font-size: 0.78rem; color: #7c93b8;
     margin: 0.75rem 0; line-height: 2;
 }
 .formula-box span.f1 { color: #f59e0b; }
 .formula-box span.f2 { color: #e879f9; }
 .formula-box span.f3 { color: #67e8f9; }
-
 .bench-row   { margin: 12px 0; }
 .bench-label { font-size: 0.8rem; color: #7c93b8; margin-bottom: 5px; }
 .bench-track { background: #1e2d4a; border-radius: 4px; height: 8px; width: 100%; position: relative; }
 .bench-fill  { height: 8px; border-radius: 4px; }
 .bench-marker{ position: absolute; top: -4px; width: 3px; height: 16px; background: #f59e0b; border-radius: 2px; }
-
 .rec-card {
-    background: #0f1629; border: 1px solid #1e2d4a;
-    border-left: 3px solid #f59e0b;
+    background: #0f1629; border: 1px solid #1e2d4a; border-left: 3px solid #f59e0b;
     border-radius: 10px; padding: 16px 20px; margin-bottom: 12px;
 }
 .rec-title { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
 .rec-body  { font-size: 0.88rem; color: #9ab3cc; line-height: 1.7; }
-
 .stButton > button {
     background: linear-gradient(135deg, #b45309, #d97706) !important;
     color: #080c18 !important; border: none !important; border-radius: 8px !important;
     font-family: 'Space Mono', monospace !important; font-size: 0.8rem !important;
-    letter-spacing: 0.06em !important; height: 3rem !important;
-    width: 100% !important; font-weight: 700 !important;
+    letter-spacing: 0.06em !important; height: 3rem !important; width: 100% !important; font-weight: 700 !important;
 }
 div[data-testid="stFormSubmitButton"] > button {
     background: linear-gradient(135deg, #b45309, #d97706) !important;
@@ -209,15 +169,13 @@ div[data-testid="stFormSubmitButton"] > button {
     height: 3rem !important; width: 100% !important; font-weight: 700 !important;
 }
 hr { border-color: #1e2d4a !important; margin: 1.8rem 0 !important; }
-
 .stTabs [data-baseweb="tab-list"] {
     background: #0f1629 !important; border-radius: 10px;
     padding: 4px; gap: 4px; border: 1px solid #1e2d4a;
 }
 .stTabs [data-baseweb="tab"] {
     background: transparent !important; color: #4a6080 !important;
-    border-radius: 7px !important;
-    font-family: 'Space Mono', monospace !important; font-size: 0.72rem !important;
+    border-radius: 7px !important; font-family: 'Space Mono', monospace !important; font-size: 0.72rem !important;
 }
 .stTabs [aria-selected="true"] {
     background: linear-gradient(135deg, #b45309, #d97706) !important; color: #080c18 !important;
@@ -225,15 +183,13 @@ hr { border-color: #1e2d4a !important; margin: 1.8rem 0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ──────────────────────────────────────────────
-# CHART LAYOUT DEFAULTS
-# ──────────────────────────────────────────────
 CHART_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(color="#7c93b8", family="Space Mono"),
     margin=dict(t=30, b=30, l=10, r=10),
 )
+
 
 # ──────────────────────────────────────────────
 # GOOGLE SHEETS
@@ -251,14 +207,24 @@ def connect_to_sheet():
 
 
 def append_and_get_row(sheet, row_data):
+    """Append a brand-new row and return its exact index from Google's response."""
     response = sheet.append_row(
         row_data,
         value_input_option="USER_ENTERED",
-        insert_data_option="INSERT_ROWS"   # ← forces a brand new row every time
+        insert_data_option="INSERT_ROWS",   # always a new row, never overwrites
     )
     updated_range = response["updates"]["updatedRange"]
     match = re.search(r':.*?(\d+)$', updated_range)
     return int(match.group(1)) if match else None
+
+
+def id_already_submitted(sheet, participant_id):
+    """Check col A for this ID — returns True if already exists in sheet."""
+    try:
+        col_a = sheet.col_values(1)   # col 1 = Unique_ID
+        return participant_id in col_a
+    except Exception:
+        return False
 
 
 # ──────────────────────────────────────────────
@@ -312,11 +278,11 @@ def run_model(data):
         flags.append(f"🔴 Monthly deficit of <b>${abs(round(surplus, 0))}</b> — expenditure exceeds income.")
 
     score_components = {
-        "Surplus Ratio (×40)":       round((surplus / m_inc) * 40, 1),
-        "Fin. Literacy (×0.2)":      round(lit_map[data['lit']] * 0.2, 1),
-        "Family Support (+20)":       20 if data['p_supp'] == "Yes" else 0,
-        "Base Score (+30)":           30,
-        "Meal-Skip Penalty (−25)":   -25 if data['meals'] == "Yes" else 0,
+        "Surplus Ratio (×40)":      round((surplus / m_inc) * 40, 1),
+        "Fin. Literacy (×0.2)":     round(lit_map[data['lit']] * 0.2, 1),
+        "Family Support (+20)":      20 if data['p_supp'] == "Yes" else 0,
+        "Base Score (+30)":          30,
+        "Meal-Skip Penalty (−25)":  -25 if data['meals'] == "Yes" else 0,
     }
 
     return {
@@ -339,13 +305,16 @@ def run_model(data):
 
 
 # ──────────────────────────────────────────────
-# SESSION INIT
+# SESSION STATE INIT  (only runs once per tab)
 # ──────────────────────────────────────────────
 if "step" not in st.session_state:
-    st.session_state.step = "home"
+    st.session_state.step       = "home"
+    st.session_state.data_saved = False
+    st.session_state.participant_id = f"RES-{random.randint(100000, 999999)}"
+
 
 # ══════════════════════════════════════════════
-# FINISHED
+# STEP: FINISHED
 # ══════════════════════════════════════════════
 if st.session_state.step == "finished":
     st.balloons()
@@ -356,8 +325,9 @@ if st.session_state.step == "finished":
     st.markdown('<div class="analysis-box">You may safely close this window. Your data will be used solely for academic research on financial resilience among international students in Sydney.</div>', unsafe_allow_html=True)
     st.stop()
 
+
 # ══════════════════════════════════════════════
-# HOME
+# STEP: HOME
 # ══════════════════════════════════════════════
 if st.session_state.step == "home":
     st.markdown('<div class="step-bar"><div class="step active"></div><div class="step"></div><div class="step"></div></div>', unsafe_allow_html=True)
@@ -375,14 +345,33 @@ if st.session_state.step == "home":
     consent = st.checkbox("I voluntarily consent to participate in this research study and understand my data will be anonymised.")
     if consent:
         if st.button("▶  INITIALISE SESSION"):
-            st.session_state.participant_id = f"RES-{random.randint(100000, 999999)}"
             st.session_state.step = "inputs"
             st.rerun()
 
+
 # ══════════════════════════════════════════════
-# INPUTS
+# STEP: INPUTS
 # ══════════════════════════════════════════════
 elif st.session_state.step == "inputs":
+
+    # ── Guard: already submitted this session ──
+    if st.session_state.data_saved:
+        st.markdown('<div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step active"></div></div>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="locked-box">
+            <span class="lock-icon">🔒</span>
+            <div class="lock-title">Response Already Recorded</div>
+            Your participant ID <b style="color:#f59e0b">{st.session_state.participant_id}</b>
+            has already submitted a response.<br><br>
+            Each participant may only submit once. Please pass the device to the next participant.
+        </div>""", unsafe_allow_html=True)
+        if st.button("🔄  New Participant"):
+            # Clear everything except the step
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
+        st.stop()
+
     st.markdown('<div class="step-bar"><div class="step done"></div><div class="step active"></div><div class="step"></div></div>', unsafe_allow_html=True)
     st.markdown(f'<div class="pid-chip">SESSION · {st.session_state.participant_id}</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">Financial<br>Profile</div>', unsafe_allow_html=True)
@@ -392,52 +381,55 @@ elif st.session_state.step == "inputs":
         st.markdown('<div class="section-header">Location</div>', unsafe_allow_html=True)
         suburbs = sorted(["Hurstville", "Parramatta", "Sydney CBD", "Randwick", "Strathfield",
                            "Burwood", "Auburn", "Kensington", "Rhodes", "Wolli Creek", "Other"])
-        addr = st.selectbox("Suburb of Residence", suburbs)
+        addr       = st.selectbox("Suburb of Residence", suburbs)
         custom_sub = st.text_input("If 'Other', please specify:", placeholder="e.g. Chatswood")
         final_addr = custom_sub.strip() if addr == "Other" else addr
 
         st.markdown('<div class="section-header">Income</div>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
-        with col1: inc    = st.number_input("Monthly Income (AUD $)", min_value=0, max_value=15000, value=3200, step=50)
-        with col2: p_supp = st.radio("Receiving Family Support?", ["No", "Yes"], horizontal=True)
+        with col1:
+            inc    = st.number_input("Monthly Income (AUD $)", min_value=0, max_value=15000, value=3200, step=50)
+        with col2:
+            p_supp = st.radio("Receiving Family Support?", ["No", "Yes"], horizontal=True)
         p_amt = st.number_input("Family Support Amount ($/mo) — enter 0 if none", min_value=0, max_value=5000, value=0, step=50)
 
         st.markdown('<div class="section-header">Core Weekly Expenses</div>', unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
-        with col1: rent  = st.number_input("Rent ($/wk)",      min_value=0, max_value=2000, value=450, step=10)
-        with col2: groc  = st.number_input("Groceries ($/wk)", min_value=0, max_value=500,  value=140, step=10)
-        with col3: trans = st.number_input("Transport ($/wk)", min_value=0, max_value=300,  value=45,  step=5)
+        with col1:
+            rent  = st.number_input("Rent ($/wk)",      min_value=0, max_value=2000, value=450, step=10)
+        with col2:
+            groc  = st.number_input("Groceries ($/wk)", min_value=0, max_value=500,  value=140, step=10)
+        with col3:
+            trans = st.number_input("Transport ($/wk)", min_value=0, max_value=300,  value=45,  step=5)
 
         st.markdown('<div class="section-header">Discretionary Spending</div>', unsafe_allow_html=True)
         uber = st.slider("Uber Eats / Eating Out / Lifestyle ($/wk)", min_value=0, max_value=800, value=120, step=10)
 
         st.markdown('<div class="section-header">Financial Position</div>', unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
-        with col1: bills   = st.number_input("Fixed Bills ($/mo)",    min_value=0, max_value=1000,   value=150,  step=10)
-        with col2: remit   = st.number_input("Remittance ($/mo)",     min_value=0, max_value=3000,   value=0,    step=50)
-        with col3: savings = st.number_input("Emergency Savings ($)", min_value=0, max_value=100000, value=2000, step=100)
+        with col1:
+            bills   = st.number_input("Fixed Bills ($/mo)",    min_value=0, max_value=1000,   value=150,  step=10)
+        with col2:
+            remit   = st.number_input("Remittance ($/mo)",     min_value=0, max_value=3000,   value=0,    step=50)
+        with col3:
+            savings = st.number_input("Emergency Savings ($)", min_value=0, max_value=100000, value=2000, step=100)
 
         st.markdown('<div class="section-header">Background</div>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
-        with col1: lit    = st.select_slider("Financial Literacy Level", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
-        with col2: months = st.number_input("Months Living in Sydney", min_value=1, max_value=120, value=12)
+        with col1:
+            lit    = st.select_slider("Financial Literacy Level", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
+        with col2:
+            months = st.number_input("Months Living in Sydney", min_value=1, max_value=120, value=12)
 
         meals = st.radio("Have you skipped meals due to lack of money in the past month?", ["No", "Yes"], horizontal=True)
-   st.markdown("---")
-        submitted = st.form_submit_button("⚡  GENERATE AI REPORT")
-elif st.session_state.step == "inputs":
-    st.markdown('<div class="step-bar">...</div>', unsafe_allow_html=True)
-    # ... all your inputs code ...
 
-    with st.form("input_form"):
-        # ... all form fields ...
         st.markdown("---")
         submitted = st.form_submit_button("⚡  GENERATE AI REPORT")
 
-    if submitted and not st.session_state.get("data_saved"):  # ← 4 spaces
-        if addr == "Other" and not final_addr:                 # ← 8 spaces
+    if submitted:
+        if addr == "Other" and not final_addr:
             st.warning("Please specify your suburb.")
-        else:                                                  # ← 8 spaces
+        else:
             data = {
                 "income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit,
                 "rent": rent, "uber": uber, "groc": groc, "trans": trans,
@@ -447,32 +439,53 @@ elif st.session_state.step == "inputs":
             res = run_model(data)
             st.session_state.data = data
             st.session_state.res  = res
+
             with st.spinner("Saving to research database..."):
                 sheet = connect_to_sheet()
                 if sheet:
+                    # ── Double-submission guard: check sheet for existing ID ──
+                    if id_already_submitted(sheet, st.session_state.participant_id):
+                        st.error("⚠️ This participant ID has already submitted. Please use the New Participant button.")
+                        st.session_state.data_saved = True
+                        st.stop()
+
                     sydney_time = datetime.utcnow() + timedelta(hours=11)
                     row = [
-                        st.session_state.participant_id,
-                        sydney_time.strftime("%d %b %Y  %I:%M %p"),
-                        "Yes",
-                        rent, inc, final_addr, uber,
-                        "", "",
-                        res['score'], meals, p_supp, remit,
-                        p_amt, savings, trans, lit, months,
-                        "",
+                        st.session_state.participant_id,                # Col 1  Unique_ID
+                        sydney_time.strftime("%d %b %Y  %I:%M %p"),    # Col 2  Timestamp
+                        "Yes",                                          # Col 3  Consent
+                        rent,                                           # Col 4  Weekly Rent
+                        inc,                                            # Col 5  Monthly Income
+                        final_addr,                                     # Col 6  Sydney Area
+                        uber,                                           # Col 7  Weekly UberEats
+                        "",                                             # Col 8  Trust Level (later)
+                        "",                                             # Col 9  AI Usefulness (later)
+                        res['score'],                                   # Col 10 Resilience Score
+                        meals,                                          # Col 11 Skipped Meals
+                        p_supp,                                         # Col 12 Parental Support Y/N
+                        remit,                                          # Col 13 Monthly Remittance
+                        p_amt,                                          # Col 14 Parental Support Amt
+                        savings,                                        # Col 15 Emergency Savings
+                        trans,                                          # Col 16 Weekly Transport
+                        lit,                                            # Col 17 Financial Literacy
+                        months,                                         # Col 18 Months in Sydney
+                        "",                                             # Col 19 Behavioural Intent (later)
                     ]
                     try:
                         st.session_state.target_row = append_and_get_row(sheet, row)
-                        st.session_state.data_saved = True
+                        st.session_state.data_saved = True   # lock this session
                     except Exception as e:
                         st.error(f"❌ Failed to save: {e}")
                         st.stop()
                 else:
                     st.stop()
+
             st.session_state.step = "results"
             st.rerun()
+
+
 # ══════════════════════════════════════════════
-# RESULTS
+# STEP: RESULTS
 # ══════════════════════════════════════════════
 elif st.session_state.step == "results":
     ai   = st.session_state.res
@@ -499,24 +512,23 @@ elif st.session_state.step == "results":
             <div class="metric-label">Stability Prob.</div>
         </div>
     </div>""", unsafe_allow_html=True)
+
     flags_html = "".join(
         f"<li style='margin:7px 0'>{f}</li>" for f in ai['flags']
     ) if ai['flags'] else "<li>✅ No critical stress indicators detected.</li>"
+
     st.markdown(f"""
     <div class="analysis-box">
         <b>AI Analysis — {data['addr']}</b><br><br>
         Housing costs represent <span class="highlight">{ai['rent_pct']}%</span> of total income
-        and discretionary spending accounts for
-        <span class="highlight-pink">{ai['uber_pct']}%</span>.
+        and discretionary spending accounts for <span class="highlight-pink">{ai['uber_pct']}%</span>.
         Monthly surplus is <span class="highlight">{surplus_display}</span> with a financial runway
         of <span class="highlight-cyan">{ai['runway']} months</span>.<br><br>
         <b>Key Indicators:</b>
         <ul style="margin:10px 0 0 0; padding-left:20px">{flags_html}</ul>
     </div>""", unsafe_allow_html=True)
 
-    # ══════════════════════════════════════════
-    # TABS
-    # ══════════════════════════════════════════
+    # ── TABS ──────────────────────────────────
     tab1, tab2, tab3, tab4 = st.tabs([
         "📊  Spending",
         "📈  Benchmarks",
@@ -524,7 +536,6 @@ elif st.session_state.step == "results":
         "💡  Recommendations",
     ])
 
-    # ── TAB 1: Spending ────────────────────────
     with tab1:
         st.markdown('<div class="section-header">Monthly Expense Distribution</div>', unsafe_allow_html=True)
         fig_pie = px.pie(
@@ -571,7 +582,6 @@ elif st.session_state.step == "results":
         )
         st.plotly_chart(fig_h, use_container_width=True)
 
-    # ── TAB 2: Benchmarks ──────────────────────
     with tab2:
         st.markdown('<div class="section-header">Your Spending vs Sydney Benchmarks</div>', unsafe_allow_html=True)
         st.markdown("""
@@ -636,7 +646,6 @@ elif st.session_state.step == "results":
         )
         st.plotly_chart(fig_radar, use_container_width=True)
 
-    # ── TAB 3: Score Logic ─────────────────────
     with tab3:
         st.markdown('<div class="section-header">How Your Resilience Score Was Calculated</div>', unsafe_allow_html=True)
         st.markdown("""
@@ -701,10 +710,8 @@ elif st.session_state.step == "results":
             </div>
         </div>""", unsafe_allow_html=True)
 
-    # ── TAB 4: Recommendations ─────────────────
     with tab4:
         st.markdown('<div class="section-header">AI-Generated Recommendations</div>', unsafe_allow_html=True)
-
         recs = []
         if ai['rent_pct'] > 40:
             recs.append(("🏠 Housing Cost", f"Your rent is {ai['rent_pct']}% of income. Consider shared accommodation in Auburn, Hurstville, or Parramatta — rents are 15–25% lower than the CBD."))
@@ -712,7 +719,7 @@ elif st.session_state.step == "results":
             saving = round(float(data['uber']) * 4.33 * 0.4, 0)
             recs.append(("🍔 Discretionary Spend", f"Cutting Uber/lifestyle by 40% frees ~${saving}/mo. Cook at home 4–5 days/week and use Opal card instead of rideshare."))
         if ai['runway'] < 3:
-            recs.append(("💰 Emergency Fund", f"Only {ai['runway']} months of runway. Aim for 3 months' cover — saving $50–100/week accelerates this significantly."))
+            recs.append(("💰 Emergency Fund", f"Only {ai['runway']} months of runway. Aim for 3 months cover — saving $50–100/week accelerates this significantly."))
         if float(data['remit']) > ai['m_inc'] * 0.15:
             recs.append(("💸 Remittance", "Remittances exceed 15% of income. Try Wise or Remitly for lower fees and batch transfers monthly."))
         if data['lit'] == "Novice":
@@ -737,7 +744,6 @@ elif st.session_state.step == "results":
         monthly_add = max(ai['surplus'], 0)
         proj_base   = [current_sav + monthly_add * m for m in months_proj]
         proj_opt    = [current_sav + (monthly_add * 1.2) * m for m in months_proj]
-
         fig_proj = go.Figure()
         fig_proj.add_trace(go.Scatter(
             x=months_proj, y=proj_base, name="Current trajectory",
@@ -757,18 +763,17 @@ elif st.session_state.step == "results":
         )
         st.plotly_chart(fig_proj, use_container_width=True)
 
-    # ══════════════════════════════════════════
-    # FEEDBACK FORM
-    # ══════════════════════════════════════════
+    # ── FEEDBACK FORM ─────────────────────────
     st.markdown("---")
     st.markdown('<div class="section-header">Research Evaluation</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-sub" style="font-size:0.9rem">Please evaluate the AI report before submitting your final response.</div>', unsafe_allow_html=True)
 
     with st.form("feedback_form"):
         col1, col2 = st.columns(2)
-        with col1: trust  = st.select_slider("How much do you trust the AI analysis?", options=["Low","Neutral","High"], value="Neutral")
-        with col2: useful = st.select_slider("Was this report enlightening?", options=["No","Neutral","Yes"], value="Neutral")
-
+        with col1:
+            trust  = st.select_slider("How much do you trust the AI analysis?", options=["Low", "Neutral", "High"], value="Neutral")
+        with col2:
+            useful = st.select_slider("Was this report enlightening?", options=["No", "Neutral", "Yes"], value="Neutral")
         intent = st.radio(
             "After seeing this report, what is your most likely next action?",
             ["Reduce discretionary spending", "Search for cheaper housing",
@@ -783,10 +788,8 @@ elif st.session_state.step == "results":
             if sheet and st.session_state.get("target_row"):
                 try:
                     row_idx = st.session_state.target_row
-                    # Col 8 = Trust Level, Col 9 = AI Usefulness
-                    sheet.update([[trust, useful]], f"H{row_idx}:I{row_idx}")
-                    # Col 19 = Behavioural Intent
-                    sheet.update_cell(row_idx, 19, intent)
+                    sheet.update([[trust, useful]], f"H{row_idx}:I{row_idx}")  # Col 8 & 9
+                    sheet.update_cell(row_idx, 19, intent)                     # Col 19
                     st.session_state.last_id = st.session_state.participant_id
                     st.session_state.step = "finished"
                     st.rerun()
@@ -796,8 +799,3 @@ elif st.session_state.step == "results":
                 st.error("⚠️ Row reference lost — please restart the survey.")
             else:
                 st.error("❌ Could not connect to sheet.")
-
-
-
-
-
