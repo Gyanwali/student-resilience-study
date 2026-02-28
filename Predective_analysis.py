@@ -427,55 +427,45 @@ elif st.session_state.step == "inputs":
         st.markdown("---")
         submitted = st.form_submit_button("⚡  GENERATE AI REPORT")
 
-    if submitted:
-        if addr == "Other" and not final_addr:
-            st.warning("Please specify your suburb.")
-        else:
-            data = {
-                "income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit,
-                "rent": rent, "uber": uber, "groc": groc, "trans": trans,
-                "bills": bills, "meals": meals, "addr": final_addr,
-                "savings": savings, "lit": lit, "months": months,
-            }
-            res = run_model(data)
-            st.session_state.data = data
-            st.session_state.res  = res
+    if submitted and not st.session_state.get("data_saved"):
+    if addr == "Other" and not final_addr:
+        st.warning("Please specify your suburb.")
+    else:
+        data = {
+            "income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit,
+            "rent": rent, "uber": uber, "groc": groc, "trans": trans,
+            "bills": bills, "meals": meals, "addr": final_addr,
+            "savings": savings, "lit": lit, "months": months,
+        }
+        res = run_model(data)
+        st.session_state.data = data
+        st.session_state.res  = res
 
-            with st.spinner("Saving to research database..."):
-                sheet = connect_to_sheet()
-                if sheet:
-                    sydney_time = datetime.utcnow() + timedelta(hours=11)
-                    row = [
-                        st.session_state.participant_id,         # Col 1  Unique_ID
-                        sydney_time.strftime("%Y-%m-%d %H:%M"),  # Col 2  Timestamp
-                        "Yes",                                   # Col 3  Consent
-                        rent,                                    # Col 4  Weekly Rent
-                        inc,                                     # Col 5  Monthly Income
-                        final_addr,                              # Col 6  Sydney Area
-                        uber,                                    # Col 7  Weekly UberEats
-                        "",                                      # Col 8  Trust Level (later)
-                        "",                                      # Col 9  AI Usefulness (later)
-                        res['score'],                            # Col 10 Resilience Score
-                        meals,                                   # Col 11 Skipped Meals
-                        p_supp,                                  # Col 12 Parental Support Y/N
-                        remit,                                   # Col 13 Monthly Remittance
-                        p_amt,                                   # Col 14 Parental Support Amt
-                        savings,                                 # Col 15 Emergency Savings
-                        trans,                                   # Col 16 Weekly Transport
-                        lit,                                     # Col 17 Financial Literacy
-                        months,                                  # Col 18 Months in Sydney
-                        "",                                      # Col 19 Behavioural Intent (later)
-                    ]
-                    try:
-                        st.session_state.target_row = append_and_get_row(sheet, row)
-                    except Exception as e:
-                        st.error(f"❌ Failed to save: {e}")
-                        st.stop()
-                else:
+        with st.spinner("Saving to research database..."):
+            sheet = connect_to_sheet()
+            if sheet:
+                sydney_time = datetime.utcnow() + timedelta(hours=11)
+                row = [
+                    st.session_state.participant_id,
+                    sydney_time.strftime("%d %b %Y  %I:%M %p"),  # ← clean timestamp
+                    "Yes",
+                    rent, inc, final_addr, uber,
+                    "", "",
+                    res['score'], meals, p_supp, remit,
+                    p_amt, savings, trans, lit, months,
+                    "",
+                ]
+                try:
+                    st.session_state.target_row = append_and_get_row(sheet, row)
+                    st.session_state.data_saved = True  # ← lock so rerun can't fire twice
+                except Exception as e:
+                    st.error(f"❌ Failed to save: {e}")
                     st.stop()
+            else:
+                st.stop()
 
-            st.session_state.step = "results"
-            st.rerun()
+        st.session_state.step = "results"
+        st.rerun()
 
 # ══════════════════════════════════════════════
 # RESULTS
@@ -804,4 +794,5 @@ elif st.session_state.step == "results":
                 st.error("⚠️ Row reference lost — please restart the survey.")
             else:
                 st.error("❌ Could not connect to sheet.")
+
 
