@@ -40,7 +40,7 @@ SCOPES = [
 
 st.set_page_config(page_title="Resilience Lab AI", page_icon="🛡️", layout="centered")
 
-COLORS = ["#f59e0b", "#e879f9", "#67e8f9", "#4ade80", "#fb7185", "#a78bfa"]
+COLORS = ["#3b82f6", "#8b5cf6", "#06b6d4", "#4ade80", "#fb7185", "#6366f1"]
 
 st.markdown("""
 <style>
@@ -52,18 +52,18 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
 
 .stApp::before {
     content: ''; display: block; height: 3px;
-    background: linear-gradient(90deg, #f59e0b, #e879f9, #67e8f9);
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
     position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
 }
 .top-badge {
-    font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #f59e0b;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #3b82f6;
     letter-spacing: 0.22em; text-transform: uppercase;
-    border: 1px solid #f59e0b44; background: #f59e0b11;
+    border: 1px solid #3b82f644; background: #3b82f611;
     display: inline-block; padding: 5px 14px; border-radius: 3px; margin-bottom: 1.2rem;
 }
 .hero-title {
     font-family: 'Space Grotesk', sans-serif; font-size: 3rem; font-weight: 700;
-    background: linear-gradient(135deg, #f59e0b 0%, #e879f9 60%, #67e8f9 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 60%, #06b6d4 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     line-height: 1.15; margin-bottom: 0.6rem;
 }
@@ -82,52 +82,52 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
 }
 .metric-card::after {
     content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, #f59e0b, #e879f9);
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
 }
 .metric-value {
     font-family: 'Space Mono', monospace; font-size: 2.1rem; font-weight: 700;
-    color: #f59e0b; display: block; line-height: 1;
+    color: #3b82f6; display: block; line-height: 1;
 }
 .metric-label { font-size: 0.68rem; color: #4a6080; text-transform: uppercase; letter-spacing: 0.12em; margin-top: 8px; }
 .analysis-box {
     background: linear-gradient(135deg, #0c1524, #0f1d35);
-    border: 1px solid #1e3a5f; border-left: 4px solid #f59e0b;
+    border: 1px solid #1e3a5f; border-left: 4px solid #3b82f6;
     border-radius: 12px; padding: 22px 26px; margin: 1.5rem 0;
     line-height: 1.85; color: #9ab3cc; font-size: 0.93rem;
 }
 .analysis-box b { color: #e2e8f0; }
-.highlight      { color: #f59e0b; font-family: 'Space Mono', monospace; font-weight: 700; }
-.highlight-pink { color: #e879f9; font-family: 'Space Mono', monospace; font-weight: 700; }
-.highlight-cyan { color: #67e8f9; font-family: 'Space Mono', monospace; font-weight: 700; }
+.highlight      { color: #3b82f6; font-family: 'Space Mono', monospace; font-weight: 700; }
+.highlight-pink { color: #8b5cf6; font-family: 'Space Mono', monospace; font-weight: 700; }
+.highlight-cyan { color: #06b6d4; font-family: 'Space Mono', monospace; font-weight: 700; }
 .pid-chip {
     font-family: 'Space Mono', monospace; background: #0f1629; border: 1px solid #1e2d4a;
-    border-radius: 6px; padding: 7px 16px; font-size: 0.75rem; color: #f59e0b;
+    border-radius: 6px; padding: 7px 16px; font-size: 0.75rem; color: #3b82f6;
     display: inline-block; margin-bottom: 1.5rem; letter-spacing: 0.08em;
 }
 .step-bar { display: flex; gap: 6px; margin-bottom: 2.2rem; }
 .step        { flex: 1; height: 3px; border-radius: 2px; background: #1e2d4a; }
-.step.done   { background: #f59e0b; }
-.step.active { background: linear-gradient(90deg, #f59e0b, #e879f9); }
+.step.done   { background: #3b82f6; }
+.step.active { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
 .section-header {
     font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #3a5070;
     text-transform: uppercase; letter-spacing: 0.18em;
     margin: 1.8rem 0 0.8rem 0; border-bottom: 1px solid #1e2d4a; padding-bottom: 8px;
 }
 .success-id {
-    font-family: 'Space Mono', monospace; font-size: 1.3rem; color: #f59e0b;
-    background: #0f1629; border: 1px solid #f59e0b33; border-radius: 10px;
+    font-family: 'Space Mono', monospace; font-size: 1.3rem; color: #3b82f6;
+    background: #0f1629; border: 1px solid #3b82f633; border-radius: 10px;
     padding: 18px 24px; text-align: center; margin: 1.5rem 0; letter-spacing: 0.06em;
 }
 .locked-box {
-    background: linear-gradient(135deg, #1a0a00, #2a1200);
-    border: 1px solid #f59e0b55; border-left: 4px solid #f59e0b;
+    background: linear-gradient(135deg, #0a0f1e, #0f1629);
+    border: 1px solid #3b82f655; border-left: 4px solid #3b82f6;
     border-radius: 12px; padding: 22px 26px; margin: 1.5rem 0;
     line-height: 1.8; color: #9ab3cc; font-size: 0.93rem; text-align: center;
 }
 .locked-box .lock-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
 .locked-box .lock-title {
     font-family: 'Space Mono', monospace; font-size: 1.1rem;
-    color: #f59e0b; font-weight: 700; margin-bottom: 8px;
+    color: #3b82f6; font-weight: 700; margin-bottom: 8px;
 }
 .insight-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin: 1rem 0; }
 .insight-card { background: #0f1629; border: 1px solid #1e2d4a; border-radius: 10px; padding: 16px 18px; }
@@ -142,29 +142,29 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
     font-family: 'Space Mono', monospace; font-size: 0.78rem; color: #7c93b8;
     margin: 0.75rem 0; line-height: 2;
 }
-.formula-box span.f1 { color: #f59e0b; }
-.formula-box span.f2 { color: #e879f9; }
-.formula-box span.f3 { color: #67e8f9; }
+.formula-box span.f1 { color: #3b82f6; }
+.formula-box span.f2 { color: #8b5cf6; }
+.formula-box span.f3 { color: #06b6d4; }
 .bench-row   { margin: 12px 0; }
 .bench-label { font-size: 0.8rem; color: #7c93b8; margin-bottom: 5px; }
 .bench-track { background: #1e2d4a; border-radius: 4px; height: 8px; width: 100%; position: relative; }
 .bench-fill  { height: 8px; border-radius: 4px; }
-.bench-marker{ position: absolute; top: -4px; width: 3px; height: 16px; background: #f59e0b; border-radius: 2px; }
+.bench-marker{ position: absolute; top: -4px; width: 3px; height: 16px; background: #3b82f6; border-radius: 2px; }
 .rec-card {
-    background: #0f1629; border: 1px solid #1e2d4a; border-left: 3px solid #f59e0b;
+    background: #0f1629; border: 1px solid #1e2d4a; border-left: 3px solid #3b82f6;
     border-radius: 10px; padding: 16px 20px; margin-bottom: 12px;
 }
-.rec-title { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+.rec-title { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
 .rec-body  { font-size: 0.88rem; color: #9ab3cc; line-height: 1.7; }
 .stButton > button {
-    background: linear-gradient(135deg, #b45309, #d97706) !important;
-    color: #080c18 !important; border: none !important; border-radius: 8px !important;
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
+    color: #ffffff !important; border: none !important; border-radius: 8px !important;
     font-family: 'Space Mono', monospace !important; font-size: 0.8rem !important;
     letter-spacing: 0.06em !important; height: 3rem !important; width: 100% !important; font-weight: 700 !important;
 }
 div[data-testid="stFormSubmitButton"] > button {
-    background: linear-gradient(135deg, #b45309, #d97706) !important;
-    color: #080c18 !important; border: none !important; border-radius: 8px !important;
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
+    color: #ffffff !important; border: none !important; border-radius: 8px !important;
     font-family: 'Space Mono', monospace !important; font-size: 0.8rem !important;
     height: 3rem !important; width: 100% !important; font-weight: 700 !important;
 }
@@ -178,7 +178,7 @@ hr { border-color: #1e2d4a !important; margin: 1.8rem 0 !important; }
     border-radius: 7px !important; font-family: 'Space Mono', monospace !important; font-size: 0.72rem !important;
 }
 .stTabs [aria-selected="true"] {
-    background: linear-gradient(135deg, #b45309, #d97706) !important; color: #080c18 !important;
+    background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important; color: #ffffff !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -361,7 +361,7 @@ elif st.session_state.step == "inputs":
         <div class="locked-box">
             <span class="lock-icon">🔒</span>
             <div class="lock-title">Response Already Recorded</div>
-            Your participant ID <b style="color:#f59e0b">{st.session_state.participant_id}</b>
+            Your participant ID <b style="color:#3b82f6">{st.session_state.participant_id}</b>
             has already submitted a response.<br><br>
             Each participant may only submit once. Please pass the device to the next participant.
         </div>""", unsafe_allow_html=True)
@@ -504,11 +504,11 @@ elif st.session_state.step == "results":
             <div class="metric-label">Resilience Score</div>
         </div>
         <div class="metric-card">
-            <span class="metric-value" style="color:#e879f9">{ai['runway']}</span>
+            <span class="metric-value" style="color:#8b5cf6">{ai['runway']}</span>
             <div class="metric-label">Runway (months)</div>
         </div>
         <div class="metric-card">
-            <span class="metric-value" style="color:#67e8f9">{ai['prob']}%</span>
+            <span class="metric-value" style="color:#06b6d4">{ai['prob']}%</span>
             <div class="metric-label">Stability Prob.</div>
         </div>
     </div>""", unsafe_allow_html=True)
@@ -552,7 +552,7 @@ elif st.session_state.step == "results":
         fig_bar.add_trace(go.Bar(
             x=["Total Income", "Total Expenses", "Monthly Surplus"],
             y=[ai['m_inc'], ai['m_exp'], max(ai['surplus'], 0)],
-            marker_color=["#4ade80", "#f87171", "#f59e0b"],
+            marker_color=["#4ade80", "#f87171", "#3b82f6"],
             marker_line=dict(color="#080c18", width=2),
             text=[f"${v:,.0f}" for v in [ai['m_inc'], ai['m_exp'], max(ai['surplus'], 0)]],
             textposition="outside", textfont=dict(color="#e2e8f0", size=13),
@@ -587,7 +587,7 @@ elif st.session_state.step == "results":
         st.markdown("""
         <div class="analysis-box" style="font-size:0.85rem">
         Based on the <b>50/30/20 rule</b> adapted for Sydney international students.
-        The <span style="color:#f59e0b;font-weight:700">amber marker</span> shows your position;
+        The <span style="color:#3b82f6;font-weight:700">blue marker</span> shows your position;
         the shaded bar is the recommended safe range.
         </div>""", unsafe_allow_html=True)
 
@@ -599,7 +599,7 @@ elif st.session_state.step == "results":
             ("Savings Rate",              ai['save_rate'],  20, 30, "%"),
         ]
         for label, val, rec_lo, rec_hi, unit in benchmarks:
-            color = "#4ade80" if rec_lo <= val <= rec_hi else ("#f59e0b" if val < rec_lo else "#f87171")
+            color = "#4ade80" if rec_lo <= val <= rec_hi else ("#3b82f6" if val < rec_lo else "#f87171")
             pct_w = min(val / 50 * 100, 100)
             st.markdown(f"""
             <div class="bench-row">
@@ -631,8 +631,8 @@ elif st.session_state.step == "results":
         fig_radar.add_trace(go.Scatterpolar(
             r=radar_vals + [radar_vals[0]], theta=radar_cats + [radar_cats[0]],
             fill='toself', name='Your Profile',
-            line=dict(color='#f59e0b', width=2),
-            fillcolor='rgba(245,158,11,0.12)',
+            line=dict(color='#3b82f6', width=2),
+            fillcolor='rgba(59,130,246,0.12)',
         ))
         fig_radar.update_layout(
             **CHART_LAYOUT,
@@ -671,7 +671,7 @@ elif st.session_state.step == "results":
             connector=dict(line=dict(color="#1e2d4a", width=1)),
             increasing=dict(marker_color="#4ade80"),
             decreasing=dict(marker_color="#f87171"),
-            totals=dict(marker_color="#f59e0b"),
+            totals=dict(marker_color="#3b82f6"),
             text=[f"{v:+.1f}" for v in values] + [f"{running:.0f}"],
             textposition="outside",
             textfont=dict(color="#e2e8f0", size=11),
@@ -684,7 +684,7 @@ elif st.session_state.step == "results":
         )
         st.plotly_chart(fig_wf, use_container_width=True)
 
-        score_color = "#4ade80" if ai['score'] >= 60 else ("#f59e0b" if ai['score'] >= 35 else "#f87171")
+        score_color = "#4ade80" if ai['score'] >= 60 else ("#3b82f6" if ai['score'] >= 35 else "#f87171")
         score_label = "Strong" if ai['score'] >= 60 else ("Moderate" if ai['score'] >= 35 else "Vulnerable")
         st.markdown(f"""
         <div class="insight-grid">
@@ -695,7 +695,7 @@ elif st.session_state.step == "results":
             </div>
             <div class="insight-card">
                 <div class="i-label">Literacy Contribution</div>
-                <div class="i-value" style="color:#e879f9">{ai['lit_score']}</div>
+                <div class="i-value" style="color:#8b5cf6">{ai['lit_score']}</div>
                 <div class="i-sub">Level: {data['lit']}</div>
             </div>
             <div class="insight-card">
@@ -705,7 +705,7 @@ elif st.session_state.step == "results":
             </div>
             <div class="insight-card">
                 <div class="i-label">Stability Probability</div>
-                <div class="i-value" style="color:#67e8f9">{ai['prob']}%</div>
+                <div class="i-value" style="color:#06b6d4">{ai['prob']}%</div>
                 <div class="i-sub">Logistic model on surplus ratio</div>
             </div>
         </div>""", unsafe_allow_html=True)
@@ -747,8 +747,8 @@ elif st.session_state.step == "results":
         fig_proj = go.Figure()
         fig_proj.add_trace(go.Scatter(
             x=months_proj, y=proj_base, name="Current trajectory",
-            line=dict(color="#f59e0b", width=2.5),
-            fill='tozeroy', fillcolor='rgba(245,158,11,0.06)',
+            line=dict(color="#3b82f6", width=2.5),
+            fill='tozeroy', fillcolor='rgba(59,130,246,0.06)',
         ))
         fig_proj.add_trace(go.Scatter(
             x=months_proj, y=proj_opt, name="If 20% more saved",
