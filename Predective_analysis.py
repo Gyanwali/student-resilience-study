@@ -55,6 +55,114 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
     background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
     position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
 }
+
+/* ── Widget labels ── */
+label, .stTextInput label, .stNumberInput label,
+.stSelectbox label, .stRadio label, .stSlider label,
+.stSelectSlider label, .stCheckbox label,
+div[data-testid="stWidgetLabel"] p,
+div[data-testid="stWidgetLabel"] {
+    color: #cbd5e1 !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+}
+
+/* ── Text inputs & number inputs ── */
+input[type="number"], input[type="text"],
+.stTextInput input, .stNumberInput input {
+    background: #131c35 !important;
+    color: #f1f5f9 !important;
+    border: 1px solid #2a3f6a !important;
+    border-radius: 8px !important;
+    font-size: 0.92rem !important;
+}
+input[type="number"]:focus, input[type="text"]:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.2) !important;
+}
+
+/* ── Selectbox / dropdown ── */
+.stSelectbox > div > div,
+div[data-baseweb="select"] > div {
+    background: #131c35 !important;
+    border: 1px solid #2a3f6a !important;
+    border-radius: 8px !important;
+    color: #f1f5f9 !important;
+}
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] div {
+    color: #f1f5f9 !important;
+}
+/* dropdown menu list */
+ul[data-baseweb="menu"],
+div[data-baseweb="popover"] ul {
+    background: #1a2540 !important;
+    border: 1px solid #2a3f6a !important;
+    border-radius: 8px !important;
+}
+ul[data-baseweb="menu"] li,
+div[data-baseweb="popover"] li {
+    color: #e2e8f0 !important;
+    background: transparent !important;
+}
+ul[data-baseweb="menu"] li:hover,
+div[data-baseweb="popover"] li:hover {
+    background: #1e3a6a !important;
+    color: #ffffff !important;
+}
+
+/* ── Radio buttons ── */
+.stRadio > div { gap: 10px !important; }
+.stRadio label {
+    color: #cbd5e1 !important;
+    background: #131c35 !important;
+    border: 1px solid #2a3f6a !important;
+    border-radius: 8px !important;
+    padding: 8px 18px !important;
+    font-size: 0.86rem !important;
+    cursor: pointer;
+}
+.stRadio label:hover { border-color: #3b82f6 !important; color: #ffffff !important; }
+.stRadio [aria-checked="true"] + label,
+.stRadio input:checked + div {
+    border-color: #3b82f6 !important;
+    background: #1e3a6a !important;
+    color: #ffffff !important;
+}
+
+/* ── Checkbox ── */
+.stCheckbox label { color: #cbd5e1 !important; font-size: 0.9rem !important; }
+.stCheckbox span  { border-color: #2a3f6a !important; background: #131c35 !important; }
+
+/* ── Slider ── */
+.stSlider > div > div > div > div {
+    background: #3b82f6 !important;
+}
+.stSlider [data-baseweb="slider"] > div:first-child {
+    background: #1e2d4a !important;
+}
+.stSlider p, .stSlider span { color: #cbd5e1 !important; }
+
+/* ── Select slider (select_slider) ── */
+div[data-testid="stSlider"] label { color: #cbd5e1 !important; }
+div[data-testid="stSlider"] div[role="slider"] { background: #3b82f6 !important; }
+div[data-testid="stSlider"] .st-emotion-cache-1inwz65 { color: #e2e8f0 !important; }
+
+/* ── Number input spinner buttons ── */
+.stNumberInput button {
+    background: #1e2d4a !important;
+    border-color: #2a3f6a !important;
+    color: #e2e8f0 !important;
+}
+.stNumberInput button:hover { background: #2a3f6a !important; }
+
+/* ── General paragraph / text inside widgets ── */
+.stApp p { color: #cbd5e1; }
+.stMarkdown p { color: #cbd5e1; }
+
+/* ── Section dividers inside forms ── */
+.stForm { background: transparent !important; border: none !important; }
+
 .top-badge {
     font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #3b82f6;
     letter-spacing: 0.22em; text-transform: uppercase;
@@ -68,11 +176,11 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
     line-height: 1.15; margin-bottom: 0.6rem;
 }
 .hero-sub {
-    font-size: 1rem; color: #7c93b8; margin-bottom: 2rem; font-weight: 300; line-height: 1.6;
+    font-size: 1rem; color: #94a3b8; margin-bottom: 2rem; font-weight: 300; line-height: 1.6;
 }
 .card {
     background: #0f1629; border: 1px solid #1e2d4a;
-    border-radius: 14px; padding: 22px 24px; margin-bottom: 1rem;
+    border-radius: 14px; padding: 22px 24px; margin-bottom: 1rem; color: #cbd5e1;
 }
 .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 1.5rem 0; }
 .metric-card {
@@ -88,14 +196,14 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
     font-family: 'Space Mono', monospace; font-size: 2.1rem; font-weight: 700;
     color: #3b82f6; display: block; line-height: 1;
 }
-.metric-label { font-size: 0.68rem; color: #4a6080; text-transform: uppercase; letter-spacing: 0.12em; margin-top: 8px; }
+.metric-label { font-size: 0.68rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.12em; margin-top: 8px; }
 .analysis-box {
     background: linear-gradient(135deg, #0c1524, #0f1d35);
     border: 1px solid #1e3a5f; border-left: 4px solid #3b82f6;
     border-radius: 12px; padding: 22px 26px; margin: 1.5rem 0;
-    line-height: 1.85; color: #9ab3cc; font-size: 0.93rem;
+    line-height: 1.85; color: #94a3b8; font-size: 0.93rem;
 }
-.analysis-box b { color: #e2e8f0; }
+.analysis-box b { color: #f1f5f9; }
 .highlight      { color: #3b82f6; font-family: 'Space Mono', monospace; font-weight: 700; }
 .highlight-pink { color: #8b5cf6; font-family: 'Space Mono', monospace; font-weight: 700; }
 .highlight-cyan { color: #06b6d4; font-family: 'Space Mono', monospace; font-weight: 700; }
@@ -109,7 +217,7 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
 .step.done   { background: #3b82f6; }
 .step.active { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
 .section-header {
-    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #3a5070;
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #64748b;
     text-transform: uppercase; letter-spacing: 0.18em;
     margin: 1.8rem 0 0.8rem 0; border-bottom: 1px solid #1e2d4a; padding-bottom: 8px;
 }
@@ -122,7 +230,7 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
     background: linear-gradient(135deg, #0a0f1e, #0f1629);
     border: 1px solid #3b82f655; border-left: 4px solid #3b82f6;
     border-radius: 12px; padding: 22px 26px; margin: 1.5rem 0;
-    line-height: 1.8; color: #9ab3cc; font-size: 0.93rem; text-align: center;
+    line-height: 1.8; color: #94a3b8; font-size: 0.93rem; text-align: center;
 }
 .locked-box .lock-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
 .locked-box .lock-title {
@@ -132,21 +240,21 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
 .insight-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin: 1rem 0; }
 .insight-card { background: #0f1629; border: 1px solid #1e2d4a; border-radius: 10px; padding: 16px 18px; }
 .insight-card .i-label {
-    font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #3a5070;
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; color: #64748b;
     text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;
 }
 .insight-card .i-value { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #f1f5f9; }
-.insight-card .i-sub   { font-size: 0.76rem; color: #4a6080; margin-top: 4px; }
+.insight-card .i-sub   { font-size: 0.76rem; color: #64748b; margin-top: 4px; }
 .formula-box {
     background: #080c18; border: 1px solid #1e2d4a; border-radius: 10px; padding: 16px 20px;
-    font-family: 'Space Mono', monospace; font-size: 0.78rem; color: #7c93b8;
+    font-family: 'Space Mono', monospace; font-size: 0.78rem; color: #94a3b8;
     margin: 0.75rem 0; line-height: 2;
 }
 .formula-box span.f1 { color: #3b82f6; }
 .formula-box span.f2 { color: #8b5cf6; }
 .formula-box span.f3 { color: #06b6d4; }
 .bench-row   { margin: 12px 0; }
-.bench-label { font-size: 0.8rem; color: #7c93b8; margin-bottom: 5px; }
+.bench-label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; }
 .bench-track { background: #1e2d4a; border-radius: 4px; height: 8px; width: 100%; position: relative; }
 .bench-fill  { height: 8px; border-radius: 4px; }
 .bench-marker{ position: absolute; top: -4px; width: 3px; height: 16px; background: #3b82f6; border-radius: 2px; }
@@ -155,7 +263,7 @@ html, body, [class*="css"] { font-family: 'Space Grotesk', sans-serif; }
     border-radius: 10px; padding: 16px 20px; margin-bottom: 12px;
 }
 .rec-title { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
-.rec-body  { font-size: 0.88rem; color: #9ab3cc; line-height: 1.7; }
+.rec-body  { font-size: 0.88rem; color: #94a3b8; line-height: 1.7; }
 .stButton > button {
     background: linear-gradient(135deg, #1d4ed8, #3b82f6) !important;
     color: #ffffff !important; border: none !important; border-radius: 8px !important;
@@ -174,7 +282,7 @@ hr { border-color: #1e2d4a !important; margin: 1.8rem 0 !important; }
     padding: 4px; gap: 4px; border: 1px solid #1e2d4a;
 }
 .stTabs [data-baseweb="tab"] {
-    background: transparent !important; color: #4a6080 !important;
+    background: transparent !important; color: #64748b !important;
     border-radius: 7px !important; font-family: 'Space Mono', monospace !important; font-size: 0.72rem !important;
 }
 .stTabs [aria-selected="true"] {
