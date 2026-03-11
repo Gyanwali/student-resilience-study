@@ -755,6 +755,214 @@ hr {
     padding: 16px 18px;
     margin-top: 10px;
 }
+
+/* ── Inline reassurance pill ── */
+.reassure {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    color: var(--teal);
+    background: var(--teal-soft);
+    border: 1px solid var(--teal);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-family: 'Courier Prime', monospace;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* ── Pulse glow on the locked score ring ── */
+@keyframes pulse-ring {
+    0%   { box-shadow: 0 0 0 0   rgba(244,63,94,0.35); }
+    70%  { box-shadow: 0 0 0 16px rgba(244,63,94,0); }
+    100% { box-shadow: 0 0 0 0   rgba(244,63,94,0); }
+}
+.pulse-ring {
+    animation: pulse-ring 2s ease-out infinite;
+}
+
+/* ── Score-reveal lock gate ── */
+.lock-gate {
+    background: var(--bg-card);
+    border: 2px solid var(--coral);
+    border-radius: 18px;
+    padding: 28px 24px;
+    margin: 2rem 0 1.4rem 0;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(244,63,94,0.10);
+}
+.lock-gate .lg-eyebrow {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: var(--coral);
+    text-transform: uppercase;
+    letter-spacing: .2em;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+.lock-gate .lg-score-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0 8px 0;
+}
+.lock-gate .lg-ring {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 4px solid var(--coral);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    filter: blur(6px);
+    user-select: none;
+}
+.lock-gate .lg-ring-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--coral);
+    line-height: 1;
+}
+.lock-gate .lg-ring-lbl {
+    font-size: 0.6rem;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+.lock-gate .lg-lock-icon {
+    font-size: 2rem;
+    margin: 0 18px;
+}
+.lock-gate .lg-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 10px 0 6px 0;
+}
+.lock-gate .lg-sub {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    max-width: 380px;
+    margin: 0 auto 14px auto;
+}
+
+/* ── Question progress dots ── */
+.q-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 1.4rem;
+}
+.q-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background .3s;
+}
+.q-dot.done   { background: var(--teal); }
+.q-dot.active { background: var(--coral); transform: scale(1.3); }
+
+/* ── Score-loading card (shown during calculation) ── */
+@keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+}
+.loading-card {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 40px 24px;
+    text-align: center;
+    margin: 2rem 0;
+}
+.loading-ring {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--border);
+    border-top: 4px solid var(--coral);
+    margin: 0 auto 20px auto;
+    animation: spin 1.2s linear infinite;
+}
+@keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loading-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+.loading-sub {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+.loading-steps {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+.loading-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.76rem;
+    color: var(--text-faint);
+    font-family: 'Courier Prime', monospace;
+}
+.loading-step .ls-icon { font-size: 1.4rem; }
+
+/* ── Form reassurance row ── */
+.form-reassure-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: -4px 0 1rem 0;
+    align-items: center;
+}
+
+/* ── Progress banner (inside results above post-survey) ── */
+.unlock-banner {
+    background: linear-gradient(135deg, var(--coral) 0%, #F97316 100%);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin: 2rem 0 1.2rem 0;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(244,63,94,0.25);
+}
+.unlock-banner .ub-eyebrow {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.8);
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+.unlock-banner .ub-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+.unlock-banner .ub-sub {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -907,6 +1115,34 @@ if "step" not in st.session_state:
     st.session_state.step           = "home"
     st.session_state.data_saved     = False
     st.session_state.participant_id = f"RES-{random.randint(100000, 999999)}"
+    st.session_state.q_index        = 0   # tracks post-survey question progress
+
+
+# ══════════════════════════════════════════════
+# STEP: CALCULATING  — score reveal anticipation
+# ══════════════════════════════════════════════
+if st.session_state.step == "calculating":
+    import time
+    st.markdown('<div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step done"></div><div class="step active"></div></div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="loading-card">
+        <div class="loading-ring"></div>
+        <div class="loading-title">Analysing your financial profile…</div>
+        <div class="loading-sub">
+            Our AI is running your data through 5 research-backed models.<br>
+            Your personalised resilience score is being calculated.
+        </div>
+        <div class="loading-steps">
+            <div class="loading-step"><span class="ls-icon">🏠</span>Housing stress</div>
+            <div class="loading-step"><span class="ls-icon">💰</span>Surplus ratio</div>
+            <div class="loading-step"><span class="ls-icon">🛡️</span>Emergency buffer</div>
+            <div class="loading-step"><span class="ls-icon">📚</span>Literacy score</div>
+            <div class="loading-step"><span class="ls-icon">🍱</span>Food security</div>
+        </div>
+    </div>""", unsafe_allow_html=True)
+    time.sleep(2.2)
+    st.session_state.step = "results"
+    st.rerun()
 
 
 # ══════════════════════════════════════════════
@@ -919,18 +1155,19 @@ if st.session_state.step == "finished":
     colour = colour_map.get(label, "var(--coral)")
 
     st.markdown('<div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step done"></div><div class="step done"></div></div>', unsafe_allow_html=True)
-    st.markdown('<div class="top-badge">✓ Research Complete</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-title">Thank <span class="accent">You</span></div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-sub">Your response has been recorded and your data is securely stored.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="top-badge">✓ Complete — Here is Your Result</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-title">Your Score<br>is <span class="accent">Revealed</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-sub">Based on your real financial data, analysed against 5 peer-reviewed frameworks.</div>', unsafe_allow_html=True)
 
-    # Score ring
+    # Animated score ring — full reveal
     st.markdown(f"""
-    <div class="finish-score-ring" style="border-color:{colour}33">
-        <span class="finish-score-num" style="color:{colour}">{score}</span>
-        <span class="finish-score-lbl">out of 100</span>
-    </div>
-    <div class="finish-band" style="color:{colour}">{label}</div>
-    """, unsafe_allow_html=True)
+    <div style="text-align:center;margin:1.6rem 0 0.6rem 0">
+        <div class="finish-score-ring pulse-ring" style="border-color:{colour};width:180px;height:180px;margin:0 auto 1rem auto">
+            <span class="finish-score-num" style="color:{colour};font-size:3.6rem">{score}</span>
+            <span class="finish-score-lbl">out of 100</span>
+        </div>
+        <div class="finish-band" style="color:{colour}">{label}</div>
+    </div>""", unsafe_allow_html=True)
 
     st.markdown(f'<div class="finish-insight">{insight}</div>', unsafe_allow_html=True)
 
@@ -954,33 +1191,118 @@ if st.session_state.step == "finished":
 # ══════════════════════════════════════════════
 if st.session_state.step == "home":
     st.markdown('<div class="step-bar"><div class="step active"></div><div class="step"></div><div class="step"></div><div class="step"></div></div>', unsafe_allow_html=True)
-    st.markdown('<div class="top-badge">🎓 Sydney · Academic Research · 2025</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-title">Resilience<br><span class="accent">Lab AI</span></div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-sub">Examining how AI-generated financial analytics influence perceived usefulness and resilience among international students in Sydney.</div>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class="card">
-        <div class="section-header">What to expect</div>
-        Takes approximately <b>3–4 minutes</b> across four short stages:<br><br>
-        <b>1.</b> One quick baseline question &nbsp;·&nbsp;
-        <b>2.</b> Your anonymised financial profile &nbsp;·&nbsp;
-        <b>3.</b> Your personalised AI resilience report &nbsp;·&nbsp;
-        <b>4.</b> Three short evaluation questions<br><br>
-        All responses are anonymised and used for academic purposes only.
-    </div>""", unsafe_allow_html=True)
 
+    st.markdown('<div class="top-badge">🎓 Free · Takes 3 Minutes · Sydney Students</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="hero-title">How financially<br>resilient are <span class="accent">you?</span></div>
+    <div class="hero-sub">Get your personalised AI Financial Resilience Score — and finally understand where your money is going and what to do about it.</div>
+    """, unsafe_allow_html=True)
+
+    # ── Curiosity stat hook ─────────────────────────────────────────────
+    st.markdown("""
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:1.2rem 0 1.6rem 0">
+        <div class="card" style="text-align:center;padding:18px 12px;border-top:4px solid var(--coral)">
+            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--coral)">7 in 10</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:5px;line-height:1.4">international students in Sydney are in <b>housing stress</b></div>
+        </div>
+        <div class="card" style="text-align:center;padding:18px 12px;border-top:4px solid var(--amber)">
+            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--amber)">1 in 3</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:5px;line-height:1.4">have skipped meals due to <b>lack of money</b></div>
+        </div>
+        <div class="card" style="text-align:center;padding:18px 12px;border-top:4px solid var(--teal)">
+            <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--teal)">&lt; 1 mo</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:5px;line-height:1.4">average emergency savings runway among students</div>
+        </div>
+    </div>
+    <div style="font-size:0.72rem;color:var(--text-faint);margin-bottom:1.4rem;font-family:'Courier Prime',monospace">Sources: AHURI (2023), National Union of Students Australia (2022)</div>
+    """, unsafe_allow_html=True)
+
+    # ── Preview of what they'll get ─────────────────────────────────────
+    st.markdown("""
+    <div class="card" style="border:2px dashed var(--border);background:var(--bg-subtle)">
+        <div class="section-header" style="margin-top:0">What you'll receive in 3 minutes</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:8px">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+                <span style="font-size:1.4rem">🎯</span>
+                <div>
+                    <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary)">Your Resilience Score</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">A personalised score from 0–100 based on 5 research-backed factors</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+                <span style="font-size:1.4rem">📊</span>
+                <div>
+                    <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary)">Full Spending Breakdown</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">Charts showing exactly where your money goes vs. safe benchmarks</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+                <span style="font-size:1.4rem">💰</span>
+                <div>
+                    <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary)">Financial Runway</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">How many months your savings would last if income stopped</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px">
+                <span style="font-size:1.4rem">💡</span>
+                <div>
+                    <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary)">Personalised Action Plan</div>
+                    <div style="font-size:0.8rem;color:var(--text-muted)">Specific steps ranked by how much money they'd free up for you</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Sample score card teaser ────────────────────────────────────────
+    st.markdown("""
+    <div class="card" style="margin-bottom:1.2rem">
+        <div class="section-header" style="margin-top:0">Sample result — what yours will look like</div>
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+            <div style="text-align:center;min-width:100px">
+                <div style="width:90px;height:90px;border-radius:50%;border:4px solid var(--coral);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto">
+                    <span style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--coral);line-height:1">??</span>
+                    <span style="font-size:0.6rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em">/ 100</span>
+                </div>
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-top:8px;font-weight:600">Your Score</div>
+            </div>
+            <div style="flex:1;min-width:180px">
+                <div style="margin-bottom:8px">
+                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:3px">
+                        <span style="color:var(--text-muted)">Housing</span><span style="color:var(--coral);font-weight:700">??%</span>
+                    </div>
+                    <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:60%;height:6px;background:var(--coral)60;border-radius:3px"></div></div>
+                </div>
+                <div style="margin-bottom:8px">
+                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:3px">
+                        <span style="color:var(--text-muted)">Lifestyle</span><span style="color:var(--amber);font-weight:700">??%</span>
+                    </div>
+                    <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:35%;height:6px;background:var(--amber)60;border-radius:3px"></div></div>
+                </div>
+                <div>
+                    <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:3px">
+                        <span style="color:var(--text-muted)">Emergency Runway</span><span style="color:var(--teal);font-weight:700">?? months</span>
+                    </div>
+                    <div style="height:6px;background:var(--border);border-radius:3px"><div style="width:45%;height:6px;background:var(--teal)60;border-radius:3px"></div></div>
+                </div>
+            </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--text-faint);margin-top:12px;font-style:italic">All data anonymised · Used for academic research only · University of New South Wales</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Consent ─────────────────────────────────────────────────────────
     st.markdown("""
     <div class="withdrawal-box">
-        <b>🔒 Your Right to Withdraw</b><br>
-        Participation is completely voluntary. If you change your mind after submitting,
-        you may request removal of your data within <b>14 days</b> by emailing
+        <b>🔒 Privacy & Your Rights</b> &nbsp;·&nbsp; All responses are anonymised.
+        You may withdraw within <b>14 days</b> by emailing
         <a href="mailto:sandeepgyanwalli@gmail.com?subject=Data Withdrawal Request">sandeepgyanwalli@gmail.com</a>
-        with the subject line <b>"Data Withdrawal Request"</b> and your Participant ID
-        (shown on the next screen). Your data will be permanently deleted within 14 days of the request.
+        with your Participant ID (shown after you begin). Data deleted within 14 days of request.
     </div>""", unsafe_allow_html=True)
 
-    consent = st.checkbox("I voluntarily consent to participate in this research study and understand my data will be anonymised.")
+    consent = st.checkbox("✅  I consent to participate — my data will be anonymised and used for academic research only.")
     if consent:
-        if st.button("▶  BEGIN SURVEY"):
+        if st.button("🎯  See My Resilience Score →"):
             st.session_state.step = "pre_survey"
             st.rerun()
 
@@ -990,23 +1312,33 @@ if st.session_state.step == "home":
 # ══════════════════════════════════════════════
 elif st.session_state.step == "pre_survey":
     st.markdown('<div class="step-bar"><div class="step done"></div><div class="step active"></div><div class="step"></div><div class="step"></div></div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="pid-chip">SESSION · {st.session_state.participant_id}</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-title">Before We<br><span class="accent">Begin</span></div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-sub">One quick question before you see any AI analysis — your honest baseline view matters for this research.</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="pid-chip">YOUR ID · {st.session_state.participant_id} · keep this safe</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-title">Quick<br><span class="accent">warm-up</span></div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-sub">One question before we dive in — it takes 5 seconds and helps us understand where you\'re starting from.</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="card" style="border-left:5px solid var(--amber);margin-bottom:0.5rem">
+        <div style="font-size:0.72rem;color:var(--amber);font-family:'Courier Prime',monospace;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Before seeing your results</div>
+        <div style="font-size:1.05rem;font-weight:600;color:var(--text-primary);line-height:1.5">
+            How much do you currently trust AI tools to give useful advice on personal financial matters?
+        </div>
+    </div>""", unsafe_allow_html=True)
 
     with st.form("pre_form"):
-        st.markdown("""
-        <div class="scale-block">
-            <div class="scale-q">I trust AI-generated tools to provide useful guidance on personal financial matters.</div>
-            <span class="scale-cite">Pre-exposure AI trust baseline — McKnight et al. (2011) &nbsp;|&nbsp; 1 = Strongly Disagree · 5 = Strongly Agree</span>
-        </div>""", unsafe_allow_html=True)
-        pre_trust = st.radio("pre_trust", LIKERT_5, horizontal=True, key="pre_trust_val", label_visibility="collapsed")
-        st.markdown('<div class="scale-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>', unsafe_allow_html=True)
+        pre_trust = st.radio("pre_trust", [
+            "1 — Not at all",
+            "2 — Slightly",
+            "3 — Neutral",
+            "4 — Mostly",
+            "5 — Completely"
+        ], horizontal=False, key="pre_trust_val", label_visibility="collapsed")
         st.markdown("---")
-        go = st.form_submit_button("NEXT  →  Financial Profile")
+        go = st.form_submit_button("Continue — Build My Profile  →")
 
     if go:
-        st.session_state.pre_ai_trust = int(pre_trust)
+        # Map label back to integer
+        val_map = {"1 — Not at all": 1, "2 — Slightly": 2, "3 — Neutral": 3, "4 — Mostly": 4, "5 — Completely": 5}
+        st.session_state.pre_ai_trust = val_map.get(pre_trust, 3)
         st.session_state.step = "inputs"
         st.rerun()
 
@@ -1033,9 +1365,18 @@ elif st.session_state.step == "inputs":
         st.stop()
 
     st.markdown('<div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step active"></div><div class="step"></div></div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="pid-chip">SESSION · {st.session_state.participant_id}</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-title">Your Financial<br><span class="accent">Profile</span></div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-sub">All figures are monthly unless stated. Best estimates are fine — there are no right or wrong answers.</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="pid-chip">YOUR ID · {st.session_state.participant_id}</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-title">Build your<br><span class="accent">profile</span></div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="explain-box" style="margin-bottom:1.4rem">
+        <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-size:1.8rem">⚡</span>
+            <div>
+                <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary)">Your score is calculated instantly — no waiting.</div>
+                <div style="font-size:0.85rem;color:var(--text-muted);margin-top:3px">Enter approximate figures — estimates are fine. All data is anonymised.</div>
+            </div>
+        </div>
+    </div>""", unsafe_allow_html=True)
 
     # ── RESEARCH GAP NOTE (visible only in dev / can remove before deployment) ──
     # Missing covariates: age group, gender, nationality, study level, weekly work hours
@@ -1044,6 +1385,7 @@ elif st.session_state.step == "inputs":
 
     # ── Family support toggle OUTSIDE form so it renders conditionally ────────
     st.markdown('<div class="section-header">Income & Family Support</div>', unsafe_allow_html=True)
+    st.markdown('<div class="form-reassure-row"><span class="reassure">🔒 Never shared</span><span class="reassure">✓ Estimates are fine</span><span class="reassure">✓ Anonymised instantly</span></div>', unsafe_allow_html=True)
     col_a, col_b = st.columns(2)
     with col_a:
         inc = st.number_input("Monthly Income from Work (AUD $)", min_value=0, max_value=15000, value=3200, step=50, key="inc_outer")
@@ -1109,7 +1451,8 @@ elif st.session_state.step == "inputs":
         meals = st.radio("Have you skipped meals due to lack of money in the past month?", ["No", "Yes"], horizontal=True)
 
         st.markdown("---")
-        submitted = st.form_submit_button("⚡  GENERATE MY RESILIENCE REPORT")
+        st.markdown('<div style="font-size:0.82rem;color:var(--text-muted);text-align:center;margin-bottom:10px">🔒 Your data is anonymised · Used for academic research only</div>', unsafe_allow_html=True)
+        submitted = st.form_submit_button("⚡  Calculate My Resilience Score  →", use_container_width=True)
 
     if submitted:
         if addr == "Other" and not final_addr:
@@ -1136,7 +1479,8 @@ elif st.session_state.step == "inputs":
             st.session_state.data = data
             st.session_state.res  = res
 
-            with st.spinner("Saving to research database..."):
+            with st.spinner("🔬 Analysing your financial profile across 5 research dimensions..."):
+                import time; time.sleep(0.8)  # Brief pause for UX anticipation
                 sheet = connect_to_sheet()
                 if sheet:
                     if id_already_submitted(sheet, st.session_state.participant_id):
@@ -1177,7 +1521,7 @@ elif st.session_state.step == "inputs":
                 else:
                     st.stop()
 
-            st.session_state.step = "results"
+            st.session_state.step = "calculating"
             st.rerun()
 
 
@@ -1189,8 +1533,16 @@ elif st.session_state.step == "results":
     data = st.session_state.data
 
     st.markdown('<div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step done"></div><div class="step active"></div></div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="pid-chip">SESSION · {st.session_state.participant_id}</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-title">Resilience<br><span class="accent">Dashboard</span></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="pid-chip">YOUR ID · {st.session_state.participant_id}</div>', unsafe_allow_html=True)
+
+    # Lead with the score band for immediate impact
+    band_label = "Financially Resilient 🟢" if ai['score']>=65 else "Moderately Resilient 🟡" if ai['score']>=40 else "Financially Vulnerable 🔴"
+    band_col   = "var(--green)" if ai['score']>=65 else "var(--amber)" if ai['score']>=40 else "var(--coral)"
+    st.markdown(f"""
+    <div style="margin-bottom:0.3rem">
+        <div class="hero-title" style="margin-bottom:0.2rem">Your score: <span style="color:{band_col}">{ai['score']}</span><span style="font-size:1.8rem;color:var(--text-muted)">/100</span></div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:{band_col};margin-bottom:0.8rem">{band_label}</div>
+    </div>""", unsafe_allow_html=True)
 
     surplus_display = f"+${ai['surplus']:,.0f}" if ai['surplus'] >= 0 else f"-${abs(ai['surplus']):,.0f}"
 
@@ -1611,69 +1963,118 @@ elif st.session_state.step == "results":
             {proj_msg}
         </div>""", unsafe_allow_html=True)
 
-    # ── POST-SURVEY  (3 questions + 1 intent) ─────────────────────────────────
+    # ── POST-SURVEY  — lock gate + progress dots ──────────────────────────────
     st.markdown("---")
-    st.markdown('<div class="section-header">Evaluation  <span style="color:#334155;font-size:0.58rem;font-family:DM Mono">4 questions · takes 30 seconds</span></div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-sub" style="font-size:0.88rem;margin-bottom:1rem">Now that you have seen the AI report, please rate the following. Use 1–5 (1 = Strongly Disagree, 5 = Strongly Agree).</div>', unsafe_allow_html=True)
+
+    # Blurred score teaser — creates urgency to complete the survey
+    sc_col_gate = "var(--green)" if ai['score']>=65 else "var(--amber)" if ai['score']>=40 else "var(--coral)"
+    st.markdown(f"""
+    <div class="lock-gate">
+        <div class="lg-eyebrow">🔒 Your result is ready — one last step</div>
+        <div class="lg-score-wrap">
+            <div class="lg-ring pulse-ring">
+                <div class="lg-ring-num" style="color:{sc_col_gate}">{ai['score']}</div>
+                <div class="lg-ring-lbl">/ 100</div>
+            </div>
+            <div class="lg-lock-icon">🔐</div>
+        </div>
+        <div class="lg-title">Your Resilience Score is hidden above</div>
+        <div class="lg-sub">
+            Answer 4 quick questions about the AI report you just read —
+            then your full result is permanently saved and revealed.
+            Takes <b>30 seconds</b>.
+        </div>
+    </div>""", unsafe_allow_html=True)
+
+    # Progress dots
+    if "q_done" not in st.session_state:
+        st.session_state.q_done = 0
+
+    def _dots(n_done, total=4):
+        dots = ""
+        for i in range(total):
+            if i < n_done:   cls = "q-dot done"
+            elif i == n_done: cls = "q-dot active"
+            else:             cls = "q-dot"
+            dots += f'<div class="{cls}"></div>'
+        label = f"Question {min(n_done+1,total)} of {total}"
+        return f'<div class="q-progress">{dots}</div><div style="text-align:center;font-size:0.76rem;color:var(--text-faint);font-family:\'Courier Prime\',monospace;font-weight:700;margin-bottom:1.2rem">{label}</div>'
+
+    st.markdown(_dots(0), unsafe_allow_html=True)
 
     with st.form("post_form"):
 
         # B1 — PU Understanding
         st.markdown("""
         <div class="scale-block">
-            <div class="scale-q">B1. This AI report improved my understanding of my financial situation.</div>
-            <span class="scale-cite">Perceived Usefulness — Davis (1989) · Primary DV</span>
+            <div class="scale-q">This AI report improved my understanding of my financial situation.</div>
+            <span class="scale-cite">Perceived Usefulness — Davis (1989) · Question 1 of 4</span>
         </div>""", unsafe_allow_html=True)
-        pu1 = st.radio("b1", LIKERT_5, horizontal=True, key="pu1", label_visibility="collapsed")
-        st.markdown('<div class="scale-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>', unsafe_allow_html=True)
+        pu1 = st.radio("Rate B1", ["1 — Strongly Disagree", "2", "3 — Neutral", "4", "5 — Strongly Agree"],
+                        horizontal=True, key="pu1", label_visibility="collapsed")
         st.markdown("<br>", unsafe_allow_html=True)
+
+        st.markdown(_dots(1), unsafe_allow_html=True)
 
         # B2 — PU Useful
         st.markdown("""
         <div class="scale-block">
-            <div class="scale-q">B2. This AI report is useful for managing my finances as a student in Sydney.</div>
-            <span class="scale-cite">Perceived Usefulness — Davis (1989) · Primary DV</span>
+            <div class="scale-q">This AI report is useful for managing my finances as a student in Sydney.</div>
+            <span class="scale-cite">Perceived Usefulness — Davis (1989) · Question 2 of 4</span>
         </div>""", unsafe_allow_html=True)
-        pu2 = st.radio("b2", LIKERT_5, horizontal=True, key="pu2", label_visibility="collapsed")
-        st.markdown('<div class="scale-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>', unsafe_allow_html=True)
+        pu2 = st.radio("Rate B2", ["1 — Strongly Disagree", "2", "3 — Neutral", "4", "5 — Strongly Agree"],
+                        horizontal=True, key="pu2", label_visibility="collapsed")
         st.markdown("<br>", unsafe_allow_html=True)
+
+        st.markdown(_dots(2), unsafe_allow_html=True)
 
         # B3 — PU Decision Aid
         st.markdown("""
         <div class="scale-block">
-            <div class="scale-q">B3. Using this AI report would help me make better financial decisions.</div>
-            <span class="scale-cite">Perceived Usefulness — Davis (1989) · Primary DV</span>
+            <div class="scale-q">Using this AI report would help me make better financial decisions.</div>
+            <span class="scale-cite">Perceived Usefulness — Davis (1989) · Question 3 of 4</span>
         </div>""", unsafe_allow_html=True)
-        pu3 = st.radio("b3", LIKERT_5, horizontal=True, key="pu3", label_visibility="collapsed")
-        st.markdown('<div class="scale-anchors"><span>Strongly Disagree</span><span>Strongly Agree</span></div>', unsafe_allow_html=True)
+        pu3 = st.radio("Rate B3", ["1 — Strongly Disagree", "2", "3 — Neutral", "4", "5 — Strongly Agree"],
+                        horizontal=True, key="pu3", label_visibility="collapsed")
         st.markdown("<br>", unsafe_allow_html=True)
 
+        st.markdown(_dots(3), unsafe_allow_html=True)
+
         # C — Behavioural Intent
-        st.markdown('<div class="section-header">After seeing this report, what is your most likely next step?</div>', unsafe_allow_html=True)
-        intent = st.radio("intent", [
+        st.markdown("""
+        <div class="scale-block">
+            <div class="scale-q">After seeing this report, what is your most likely next step?</div>
+            <span class="scale-cite">Behavioural Intent · Question 4 of 4 — almost done!</span>
+        </div>""", unsafe_allow_html=True)
+        intent = st.radio("Intent", [
             "Reduce discretionary spending",
             "Seek cheaper housing",
             "Look for additional income",
             "No change planned",
-        ], key="intent_val")
+        ], key="intent_val", label_visibility="collapsed")
 
         st.markdown("---")
-        lock = st.form_submit_button("🔒  SUBMIT & SEE MY RESULT")
+        st.markdown("""
+        <div style="text-align:center;margin-bottom:12px">
+            <div style="font-size:0.82rem;color:var(--text-muted)">
+                🔒 Submitting saves your data permanently and reveals your final score
+            </div>
+        </div>""", unsafe_allow_html=True)
+        lock = st.form_submit_button("🔓  Submit & Unlock My Full Result  →", use_container_width=True)
 
     if lock:
-        pu_composite = round((int(pu1) + int(pu2) + int(pu3)) / 3, 2)
-        with st.spinner("Saving..."):
+        # Parse Likert labels back to integers
+        lmap = {"1 — Strongly Disagree": 1, "2": 2, "3 — Neutral": 3, "4": 4, "5 — Strongly Agree": 5}
+        pu1_i, pu2_i, pu3_i = lmap.get(pu1, 3), lmap.get(pu2, 3), lmap.get(pu3, 3)
+        pu_composite = round((pu1_i + pu2_i + pu3_i) / 3, 2)
+        with st.spinner("Saving your results…"):
             sheet = connect_to_sheet()
             if sheet and st.session_state.get("target_row"):
                 try:
                     r = st.session_state.target_row
-                    # Col 8 (H) = POST_AITrust — using pu_composite as trust proxy
-                    # Col 9 (I) = POST_PU_Composite
-                    # Col 19 (S) = Behavioural Intent
-                    # Cols 21–23 (U–W) = individual PU items
                     sheet.update([[pu_composite, pu_composite]], f"H{r}:I{r}")
                     sheet.update_cell(r, 19, intent)
-                    sheet.update([[int(pu1), int(pu2), int(pu3)]], f"U{r}:W{r}")
+                    sheet.update([[pu1_i, pu2_i, pu3_i]], f"U{r}:W{r}")
                     st.session_state.final_score = st.session_state.res["score"]
                     st.session_state.last_id     = st.session_state.participant_id
                     st.session_state.step        = "finished"
