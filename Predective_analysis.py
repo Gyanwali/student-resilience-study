@@ -659,6 +659,102 @@ hr {
     margin-top: 1.4rem;
     font-weight: 700;
 }
+
+/* ── Withdrawal notice box ── */
+.withdrawal-box {
+    background: var(--indigo-soft);
+    border: 1.5px solid var(--indigo);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 1.2rem 0;
+    font-size: 0.88rem;
+    color: var(--text-body);
+    line-height: 1.75;
+}
+.withdrawal-box b { color: var(--indigo); }
+.withdrawal-box a {
+    color: var(--indigo);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* ── Explain box (plain English insight under charts) ── */
+.explain-box {
+    background: var(--bg-subtle);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 0.8rem 0 1.6rem 0;
+    font-size: 0.9rem;
+    color: var(--text-body);
+    line-height: 1.8;
+}
+.explain-box .explain-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+.explain-box .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: 'Courier Prime', monospace;
+    margin-right: 6px;
+}
+.tag-good    { background: #D1FAE5; color: #065F46; }
+.tag-warn    { background: #FEF3C7; color: #92400E; }
+.tag-risk    { background: #FEE2E2; color: #991B1B; }
+
+/* ── Research gap advisory ── */
+.gap-box {
+    background: var(--amber-soft);
+    border: 1.5px solid var(--amber);
+    border-left: 5px solid var(--amber);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 1.2rem 0;
+    font-size: 0.88rem;
+    color: var(--text-body);
+    line-height: 1.8;
+}
+.gap-box b { color: var(--amber); }
+
+/* ── Stat callout row ── */
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 1rem 0;
+}
+.stat-pill {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.stat-pill .sp-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+.stat-pill .sp-value {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* ── Conditional reveal ── */
+.conditional-field {
+    background: var(--teal-soft);
+    border: 1.5px solid var(--teal);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 10px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -838,8 +934,18 @@ if st.session_state.step == "finished":
 
     st.markdown(f'<div class="finish-insight">{insight}</div>', unsafe_allow_html=True)
 
-    st.markdown(f'<div class="finish-id">Participant ID: {st.session_state.get("last_id","—")}</div>', unsafe_allow_html=True)
-    st.markdown('<div class="analysis-box" style="margin-top:1.2rem;font-size:0.85rem">You may now safely close this window. Your data will be used solely for academic research on financial resilience among international students in Sydney.</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="finish-id">Your Participant ID: {st.session_state.get("last_id","—")}</div>', unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="withdrawal-box" style="margin-top:1.4rem">
+        <b>🔒 Data Withdrawal Rights</b><br>
+        You may request deletion of your data within <b>14 days</b> by emailing
+        <a href="mailto:sandeepgyanwalli@gmail.com?subject=Data Withdrawal Request — {st.session_state.get('last_id','')}">sandeepgyanwalli@gmail.com</a>
+        with the subject line <b>"Data Withdrawal Request"</b> and your Participant ID above.
+        Your data will be permanently deleted within 14 days of your request.
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown('<div class="analysis-box" style="margin-top:1rem;font-size:0.85rem;text-align:center">You may now safely close this window. Your data will be used solely for academic research on financial resilience among international students in Sydney.</div>', unsafe_allow_html=True)
     st.stop()
 
 
@@ -860,6 +966,16 @@ if st.session_state.step == "home":
         <b>3.</b> Your personalised AI resilience report &nbsp;·&nbsp;
         <b>4.</b> Three short evaluation questions<br><br>
         All responses are anonymised and used for academic purposes only.
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="withdrawal-box">
+        <b>🔒 Your Right to Withdraw</b><br>
+        Participation is completely voluntary. If you change your mind after submitting,
+        you may request removal of your data within <b>14 days</b> by emailing
+        <a href="mailto:sandeepgyanwalli@gmail.com?subject=Data Withdrawal Request">sandeepgyanwalli@gmail.com</a>
+        with the subject line <b>"Data Withdrawal Request"</b> and your Participant ID
+        (shown on the next screen). Your data will be permanently deleted within 14 days of the request.
     </div>""", unsafe_allow_html=True)
 
     consent = st.checkbox("I voluntarily consent to participate in this research study and understand my data will be anonymised.")
@@ -919,7 +1035,40 @@ elif st.session_state.step == "inputs":
     st.markdown('<div class="step-bar"><div class="step done"></div><div class="step done"></div><div class="step active"></div><div class="step"></div></div>', unsafe_allow_html=True)
     st.markdown(f'<div class="pid-chip">SESSION · {st.session_state.participant_id}</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-title">Your Financial<br><span class="accent">Profile</span></div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-sub">All figures are monthly unless stated. Best estimates are fine.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-sub">All figures are monthly unless stated. Best estimates are fine — there are no right or wrong answers.</div>', unsafe_allow_html=True)
+
+    # ── RESEARCH GAP NOTE (visible only in dev / can remove before deployment) ──
+    # Missing covariates: age group, gender, nationality, study level, weekly work hours
+    # These are standard in international student financial resilience literature.
+    # Adding them here improves your regression model's explanatory power significantly.
+
+    # ── Family support toggle OUTSIDE form so it renders conditionally ────────
+    st.markdown('<div class="section-header">Income & Family Support</div>', unsafe_allow_html=True)
+    col_a, col_b = st.columns(2)
+    with col_a:
+        inc = st.number_input("Monthly Income from Work (AUD $)", min_value=0, max_value=15000, value=3200, step=50, key="inc_outer")
+    with col_b:
+        p_supp = st.radio("Receiving Family Financial Support?", ["No", "Yes"], horizontal=True, key="p_supp_outer")
+
+    p_amt = 0
+    if p_supp == "Yes":
+        st.markdown('<div class="conditional-field">', unsafe_allow_html=True)
+        p_amt = st.number_input("💚 How much family support do you receive per month? (AUD $)",
+                                 min_value=50, max_value=5000, value=500, step=50, key="p_amt_outer")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="section-header">Demographics</div>', unsafe_allow_html=True)
+    col_d1, col_d2 = st.columns(2)
+    with col_d1:
+        age_group = st.selectbox("Age Group", ["18–22", "23–26", "27–30", "31+"], key="age_outer")
+    with col_d2:
+        study_level = st.selectbox("Study Level", ["Undergraduate", "Postgraduate (Coursework)", "Postgraduate (Research)", "Other"], key="study_outer")
+
+    col_d3, col_d4 = st.columns(2)
+    with col_d3:
+        gender = st.selectbox("Gender", ["Male", "Female", "Non-binary / Other", "Prefer not to say"], key="gender_outer")
+    with col_d4:
+        work_hrs = st.number_input("Weekly Work Hours", min_value=0, max_value=60, value=20, step=1, key="work_outer")
 
     with st.form("input_form"):
         st.markdown('<div class="section-header">Location</div>', unsafe_allow_html=True)
@@ -928,14 +1077,6 @@ elif st.session_state.step == "inputs":
         addr       = st.selectbox("Suburb of Residence", suburbs)
         custom_sub = st.text_input("If 'Other', please specify:", placeholder="e.g. Chatswood")
         final_addr = custom_sub.strip() if addr == "Other" else addr
-
-        st.markdown('<div class="section-header">Income</div>', unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            inc    = st.number_input("Monthly Income (AUD $)", min_value=0, max_value=15000, value=3200, step=50)
-        with col2:
-            p_supp = st.radio("Receiving Family Support?", ["No", "Yes"], horizontal=True)
-        p_amt = st.number_input("Family Support Amount ($/month) — enter 0 if none", min_value=0, max_value=5000, value=0, step=50)
 
         st.markdown('<div class="section-header">Weekly Expenses</div>', unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
@@ -958,7 +1099,7 @@ elif st.session_state.step == "inputs":
         with col3:
             savings = st.number_input("Emergency Savings ($)",  min_value=0, max_value=100000, value=2000, step=100)
 
-        st.markdown('<div class="section-header">Background</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Financial Knowledge</div>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
             lit    = st.select_slider("Financial Literacy Level", options=["Novice", "Intermediate", "Advanced"], value="Intermediate")
@@ -974,11 +1115,22 @@ elif st.session_state.step == "inputs":
         if addr == "Other" and not final_addr:
             st.warning("Please specify your suburb.")
         else:
+            # Pull family support values captured OUTSIDE the form
+            inc    = st.session_state.get("inc_outer", 3200)
+            p_supp = st.session_state.get("p_supp_outer", "No")
+            p_amt  = st.session_state.get("p_amt_outer", 0) if p_supp == "Yes" else 0
+            age_group   = st.session_state.get("age_outer", "23–26")
+            study_level = st.session_state.get("study_outer", "Undergraduate")
+            gender      = st.session_state.get("gender_outer", "Prefer not to say")
+            work_hrs    = st.session_state.get("work_outer", 20)
+
             data = {
                 "income": inc, "p_supp": p_supp, "p_amt": p_amt, "remit": remit,
                 "rent": rent, "uber": uber, "groc": groc, "trans": trans,
                 "bills": bills, "meals": meals, "addr": final_addr,
                 "savings": savings, "lit": lit, "months": months,
+                "age": age_group, "study": study_level,
+                "gender": gender, "work_hrs": work_hrs,
             }
             res = run_model(data)
             st.session_state.data = data
@@ -1042,141 +1194,325 @@ elif st.session_state.step == "results":
 
     surplus_display = f"+${ai['surplus']:,.0f}" if ai['surplus'] >= 0 else f"-${abs(ai['surplus']):,.0f}"
 
+    # ── 3 headline metrics ─────────────────────────────────────────────────
     st.markdown(f"""
     <div class="metric-grid">
         <div class="metric-card metric-card-1">
             <span class="metric-value" style="color:var(--coral)">{ai['score']}</span>
-            <div class="metric-label">Resilience Score</div>
+            <div class="metric-label">Resilience Score / 100</div>
         </div>
         <div class="metric-card metric-card-2">
             <span class="metric-value" style="color:var(--teal)">{ai['runway']}</span>
-            <div class="metric-label">Runway (months)</div>
+            <div class="metric-label">Financial Runway (months)</div>
         </div>
         <div class="metric-card metric-card-3">
             <span class="metric-value" style="color:var(--amber)">{ai['prob']}%</span>
-            <div class="metric-label">Stability Prob.</div>
+            <div class="metric-label">Stability Probability</div>
         </div>
     </div>""", unsafe_allow_html=True)
 
-    flags_html = "".join(f"<li style='margin:7px 0'>{f}</li>" for f in ai['flags']) \
-                 if ai['flags'] else "<li>✅ No critical stress indicators detected.</li>"
+    # ── Plain-English metric explanation ──────────────────────────────────
+    score_band_label = "Financially Resilient 🟢" if ai['score']>=65 else "Moderately Resilient 🟡" if ai['score']>=40 else "Financially Vulnerable 🔴"
+    score_colour     = "var(--green)" if ai['score']>=65 else "var(--amber)" if ai['score']>=40 else "var(--coral)"
+    runway_status    = "✅ Safe" if ai['runway']>=3 else "⚠️ Low — below 3-month minimum" if ai['runway']>=1 else "🔴 Critical — under 1 month"
+    surplus_status   = f"✅ You have ${ai['surplus']:,.0f} left each month after all expenses." if ai['surplus']>=0 else f"🔴 You are spending ${abs(ai['surplus']):,.0f} more than you earn each month."
 
     st.markdown(f"""
+    <div class="explain-box">
+        <div class="explain-title">What do these numbers mean?</div>
+        <b>Resilience Score ({ai['score']}/100):</b> This is your overall financial health rating, calculated from five research-backed factors.
+        You fall into the <span style="color:{score_colour};font-weight:700">{score_band_label}</span> band.<br><br>
+        <b>Financial Runway ({ai['runway']} months):</b> If your income stopped today, your savings would last
+        <b>{ai['runway']} months</b>. Status: {runway_status}.<br><br>
+        <b>Stability Probability ({ai['prob']}%):</b> Based on your income-to-expense ratio, there is a
+        <b>{ai['prob']}% chance</b> of remaining financially stable. Above 60% is considered stable.<br><br>
+        <b>Monthly Cash Flow:</b> {surplus_status}
+    </div>""", unsafe_allow_html=True)
+
+    # ── Risk flag box ──────────────────────────────────────────────────────
+    flags_html = "".join(f"<li style='margin:8px 0'>{f}</li>" for f in ai['flags']) \
+                 if ai['flags'] else "<li>✅ No critical stress indicators detected — your profile is within safe thresholds.</li>"
+    st.markdown(f"""
     <div class="analysis-box">
-        <b>AI Analysis — {data['addr']}</b><br><br>
-        Housing costs represent <span class="highlight">{ai['rent_pct']:.1f}%</span> of total income
-        and discretionary spending accounts for <span class="highlight-teal">{ai['uber_pct']:.1f}%</span>.
-        Monthly surplus is <span class="highlight">{surplus_display}</span> with a financial runway of
+        <b>🤖 AI Risk Assessment — {data['addr']}</b><br><br>
+        Housing takes up <span class="highlight">{ai['rent_pct']:.1f}%</span> of your income
+        and lifestyle spending accounts for <span class="highlight-teal">{ai['uber_pct']:.1f}%</span>.
+        Your monthly cash flow is <span class="highlight">{surplus_display}</span> with a savings runway of
         <span class="highlight-amber">{ai['runway']} months</span>.<br><br>
-        <b>Risk Indicators:</b>
-        <ul style="margin:10px 0 0 0;padding-left:20px">{flags_html}</ul>
+        <b>⚠️ Flags Detected:</b>
+        <ul style="margin:10px 0 0 0;padding-left:20px;color:var(--text-body)">{flags_html}</ul>
     </div>""", unsafe_allow_html=True)
 
     tab1, tab2, tab3, tab4 = st.tabs(["📊  Spending", "📈  Benchmarks", "🔬  Score Logic", "💡  Recommendations"])
 
+    # ════════════════════════════════════════════
+    # TAB 1 — SPENDING
+    # ════════════════════════════════════════════
     with tab1:
-        st.markdown('<div class="section-header">Monthly Expense Breakdown</div>', unsafe_allow_html=True)
+        # Donut pie ────────────────────────────────────────────────────────
+        st.markdown('<div class="section-header">Where does your money go each month?</div>', unsafe_allow_html=True)
         fig_pie = px.pie(values=list(ai['exp_breakdown'].values()), names=list(ai['exp_breakdown'].keys()),
-                         hole=0.58, color_discrete_sequence=COLORS)
-        fig_pie.update_layout(**CHART_LAYOUT, legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=11)))
-        fig_pie.update_traces(textfont_color="#e2e8f0", marker=dict(line=dict(color="#06091a", width=2)))
+                         hole=0.55, color_discrete_sequence=COLORS)
+        fig_pie.update_layout(**CHART_LAYOUT, legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=12)))
+        fig_pie.update_traces(textposition="inside", textfont_size=11,
+                              marker=dict(line=dict(color="rgba(0,0,0,0)", width=0)))
         st.plotly_chart(fig_pie, use_container_width=True)
 
-        st.markdown('<div class="section-header">Income vs Expenses</div>', unsafe_allow_html=True)
+        biggest_cat = max(ai['exp_breakdown'], key=ai['exp_breakdown'].get)
+        biggest_val = ai['exp_breakdown'][biggest_cat]
+        biggest_pct = round(biggest_val / max(ai['m_inc'],1) * 100, 1)
+        st.markdown(f"""
+        <div class="explain-box">
+            <div class="explain-title">💡 Reading the Spending Pie</div>
+            Each slice shows one spending category as a share of your total monthly expenses of <b>${ai['m_exp']:,.0f}</b>.
+            Your single largest expense is <b>{biggest_cat}</b> at <b>${biggest_val:,.0f}/month ({biggest_pct}% of income)</b>.
+            A healthy budget keeps housing below <b>30%</b> and lifestyle below <b>15%</b> of income.
+            Slices that feel oversized are your best opportunities to free up money.
+        </div>""", unsafe_allow_html=True)
+
+        # Income vs Expenses bar ──────────────────────────────────────────
+        st.markdown('<div class="section-header">Income vs. Total Expenses vs. Surplus</div>', unsafe_allow_html=True)
         fig_bar = go.Figure()
+        bar_vals = [ai['m_inc'], ai['m_exp'], max(ai['surplus'], 0)]
         fig_bar.add_trace(go.Bar(
-            x=["Total Income", "Total Expenses", "Monthly Surplus"],
-            y=[ai['m_inc'], ai['m_exp'], max(ai['surplus'], 0)],
+            x=["💚 Total Income", "🔴 Total Expenses", "🟡 Monthly Surplus"],
+            y=bar_vals,
             marker_color=["#10B981", "#F43F5E", "#F59E0B"],
             marker_line=dict(color="rgba(0,0,0,0)", width=0),
-            text=[f"${v:,.0f}" for v in [ai['m_inc'], ai['m_exp'], max(ai['surplus'], 0)]],
-            textposition="outside", textfont=dict(color="#44403C", size=13),
+            text=[f"${v:,.0f}" for v in bar_vals],
+            textposition="outside", textfont=dict(color="var(--text-body)", size=13),
         ))
         fig_bar.update_layout(**CHART_LAYOUT,
             yaxis=dict(showgrid=False, showticklabels=False),
-            xaxis=dict(showgrid=False, tickfont=dict(size=12, color="#64748b")),
+            xaxis=dict(showgrid=False, tickfont=dict(size=12)),
             showlegend=False, height=300)
         st.plotly_chart(fig_bar, use_container_width=True)
 
+        bar_msg = (f"After all your expenses, you have <b>${ai['surplus']:,.0f} left over each month</b> — this is your monthly surplus. Every dollar of this surplus can go toward building your emergency fund."
+                   if ai['surplus'] >= 0 else
+                   f"Your expenses <b>exceed your income by ${abs(ai['surplus']):,.0f}/month</b>. You are going backwards — this needs urgent attention.")
+        st.markdown(f"""
+        <div class="explain-box">
+            <div class="explain-title">💡 What This Bar Chart Shows</div>
+            The <b style="color:#10B981">green bar</b> is your total income (${ai['m_inc']:,.0f}/month including any family support),
+            the <b style="color:#F43F5E">red bar</b> is everything you spend (${ai['m_exp']:,.0f}/month),
+            and the <b style="color:#F59E0B">amber bar</b> is what remains. {bar_msg}
+        </div>""", unsafe_allow_html=True)
+
+        # Horizontal % bars ───────────────────────────────────────────────
+        st.markdown('<div class="section-header">Each expense as a % of your income</div>', unsafe_allow_html=True)
+        cats     = list(ai['exp_breakdown'].keys())
+        pct_vals = [round(v / max(ai['m_inc'],1) * 100, 1) for v in ai['exp_breakdown'].values()]
+        fig_h = go.Figure(go.Bar(
+            x=pct_vals, y=cats, orientation='h',
+            marker=dict(color=COLORS[:len(cats)], line=dict(color="rgba(0,0,0,0)", width=0)),
+            text=[f"{p}% (${v:,.0f})" for p, v in zip(pct_vals, ai['exp_breakdown'].values())],
+            textposition="outside",
+        ))
+        fig_h.update_layout(**CHART_LAYOUT,
+            xaxis=dict(showgrid=False, showticklabels=False, range=[0, max(pct_vals)*1.4]),
+            yaxis=dict(showgrid=False, tickfont=dict(size=12)),
+            showlegend=False, height=300)
+        st.plotly_chart(fig_h, use_container_width=True)
+
+        other_pct = round(sum(pct_vals) - ai['rent_pct'], 1)
+        st.markdown(f"""
+        <div class="explain-box">
+            <div class="explain-title">💡 Why Percentages Matter</div>
+            Percentages let you compare your spending fairly regardless of income level.
+            Your housing alone is <b>{ai['rent_pct']:.1f}%</b> of income
+            and all other expenses total <b>{other_pct}%</b>.
+            Key thresholds: <b>Housing ≤ 30%</b> (AHURI 2023) · <b>Lifestyle ≤ 15%</b> · <b>Groceries 10–18%</b> · <b>Transport ≤ 12%</b>.
+            Any bar significantly longer than those targets is costing you financial resilience.
+        </div>""", unsafe_allow_html=True)
+
+        # 4-stat summary row ──────────────────────────────────────────────
+        st.markdown(f"""
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:1rem 0">
+            <div class="card" style="padding:14px 18px">
+                <div style="font-size:0.72rem;color:var(--text-faint);font-family:'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Monthly Income</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--green)">${ai['m_inc']:,.0f}</div>
+            </div>
+            <div class="card" style="padding:14px 18px">
+                <div style="font-size:0.72rem;color:var(--text-faint);font-family:'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Monthly Expenses</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--coral)">${ai['m_exp']:,.0f}</div>
+            </div>
+            <div class="card" style="padding:14px 18px">
+                <div style="font-size:0.72rem;color:var(--text-faint);font-family:'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Monthly Surplus</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:{'var(--green)' if ai['surplus']>=0 else 'var(--red)'}">{surplus_display}</div>
+            </div>
+            <div class="card" style="padding:14px 18px">
+                <div style="font-size:0.72rem;color:var(--text-faint);font-family:'Courier Prime',monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Savings Rate</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--indigo)">{ai['save_rate']}%</div>
+            </div>
+        </div>""", unsafe_allow_html=True)
+
+    # ════════════════════════════════════════════
+    # TAB 2 — BENCHMARKS
+    # ════════════════════════════════════════════
     with tab2:
-        st.markdown('<div class="section-header">Your Spending vs Benchmarks</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">How you compare to research benchmarks</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="explain-box">
+            <div class="explain-title">📏 What Are Benchmarks?</div>
+            These are spending thresholds drawn from Australian and international financial research.
+            <span class="tag tag-good">On Track</span> means you are within the safe range.
+            <span class="tag tag-risk">Over</span> means you are above the recommended ceiling — an area to cut.
+            <span class="tag tag-warn">Under</span> means spending less than typical (usually fine, except for savings rate where higher is better).
+            The <b>dark line</b> marks exactly where you sit.
+        </div>""", unsafe_allow_html=True)
+
         benchmarks = [
-            ("Housing % of Income",       ai['rent_pct'],  25, 30, "%"),
-            ("Discretionary % of Income", ai['uber_pct'],  10, 15, "%"),
-            ("Groceries % of Income",     ai['groc_pct'],  10, 18, "%"),
-            ("Transport % of Income",     ai['trans_pct'],  5, 12, "%"),
-            ("Savings Rate",              ai['save_rate'],  20, 30, "%"),
+            ("🏠 Housing % of Income",       ai['rent_pct'],  25, 30, "%",
+             "If your housing exceeds 30% of income you are classified as being in 'housing stress' (AHURI, 2023). This is the biggest financial burden for international students in Sydney."),
+            ("🍔 Lifestyle & Eating Out",     ai['uber_pct'],  10, 15, "%",
+             "Uber Eats, restaurants, entertainment. Above 15% means lifestyle is competing with your savings goals."),
+            ("🛒 Groceries",                  ai['groc_pct'],  10, 18, "%",
+             "10–18% of income on groceries is typical for Sydney. Below 10% may indicate you are cutting food — a food security risk."),
+            ("🚌 Transport",                  ai['trans_pct'],  5, 12, "%",
+             "Public transport should sit around 5–8% of income. Above 12% suggests heavy rideshare or car dependency."),
+            ("💰 Monthly Savings Rate",       ai['save_rate'],  20, 30, "%",
+             "Ideally save 20–30% of income monthly. This is what builds your emergency runway and long-term security."),
         ]
-        for label, val, lo, hi, unit in benchmarks:
-            color = "#4ade80" if lo <= val <= hi else ("#a78bfa" if val < lo else "#f87171")
+        for label, val, lo, hi, unit, explanation in benchmarks:
+            if lo <= val <= hi:
+                bar_col, tag_cls, tag_txt = "#10B981", "tag-good", "On Track ✅"
+            elif val < lo:
+                bar_col, tag_cls, tag_txt = "#6366F1", "tag-warn", "Under ↓"
+            else:
+                bar_col, tag_cls, tag_txt = "#F43F5E", "tag-risk", "Over ⚠️"
             pct_w = min(val / 50 * 100, 100)
             st.markdown(f"""
-            <div class="bench-row">
-                <div class="bench-label">{label} &nbsp;
-                    <span style="font-family:'DM Mono';color:{color};font-weight:600">{val}{unit}</span>
-                    <span style="font-size:0.7rem;color:#334155"> · recommended {lo}–{hi}{unit}</span>
+            <div class="card" style="margin-bottom:12px;padding:16px 20px">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-weight:600;font-size:0.92rem;color:var(--text-primary)">{label}</span>
+                    <span>
+                        <span style="font-family:'Courier Prime',monospace;font-weight:700;color:{bar_col};font-size:1.05rem">{val}{unit}</span>
+                        &nbsp;<span class="tag {tag_cls}">{tag_txt}</span>
+                    </span>
                 </div>
+                <div style="font-size:0.76rem;color:var(--text-faint);margin-bottom:10px">Target range: {lo}–{hi}{unit}</div>
                 <div class="bench-track">
-                    <div class="bench-fill" style="width:{pct_w:.0f}%;background:{color}55"></div>
-                    <div class="bench-marker" style="left:{min(pct_w,98):.0f}%"></div>
+                    <div class="bench-fill" style="width:{pct_w:.0f}%;background:{bar_col}60"></div>
+                    <div class="bench-marker" style="left:{min(pct_w,97):.0f}%;background:{bar_col}"></div>
                 </div>
+                <div style="font-size:0.83rem;color:var(--text-muted);margin-top:10px;line-height:1.6">{explanation}</div>
             </div>""", unsafe_allow_html=True)
 
-        st.markdown('<div class="section-header">Spending Radar</div>', unsafe_allow_html=True)
+        # Radar chart ─────────────────────────────────────────────────────
+        st.markdown('<div class="section-header">Full spending profile radar</div>', unsafe_allow_html=True)
         rcats = ["Housing", "Groceries", "Lifestyle", "Transport", "Bills", "Remittance"]
         rvals = [ai['rent_pct'], ai['groc_pct'], ai['uber_pct'], ai['trans_pct'],
-                 round(float(data['bills']) / ai['m_inc'] * 100, 1),
-                 round(float(data['remit']) / ai['m_inc'] * 100, 1)]
+                 round(float(data['bills']) / max(ai['m_inc'],1) * 100, 1),
+                 round(float(data['remit']) / max(ai['m_inc'],1) * 100, 1)]
         bvals = [28, 14, 12, 8, 5, 5]
         fig_r = go.Figure()
         fig_r.add_trace(go.Scatterpolar(r=bvals+[bvals[0]], theta=rcats+[rcats[0]], fill='toself',
-            name='Benchmark', line=dict(color='#10B981', dash='dash', width=2), fillcolor='rgba(16,185,129,0.07)'))
+            name='Benchmark Zone', line=dict(color='#10B981', dash='dash', width=2), fillcolor='rgba(16,185,129,0.08)'))
         fig_r.add_trace(go.Scatterpolar(r=rvals+[rvals[0]], theta=rcats+[rcats[0]], fill='toself',
-            name='Your Profile', line=dict(color='#F43F5E', width=2.5), fillcolor='rgba(244,63,94,0.1)'))
+            name='Your Profile', line=dict(color='#F43F5E', width=2.5), fillcolor='rgba(244,63,94,0.12)'))
         fig_r.update_layout(**CHART_LAYOUT,
             polar=dict(bgcolor='rgba(0,0,0,0)',
-                radialaxis=dict(visible=True, range=[0,50], color='#334155', gridcolor='#1a2a4a'),
-                angularaxis=dict(color='#64748b', gridcolor='#1a2a4a')),
-            legend=dict(bgcolor='rgba(0,0,0,0)', font=dict(size=11)), height=380)
+                radialaxis=dict(visible=True, range=[0,50], gridcolor='rgba(160,160,160,0.2)', color='var(--text-faint)'),
+                angularaxis=dict(gridcolor='rgba(160,160,160,0.2)', tickfont=dict(size=11))),
+            legend=dict(bgcolor='rgba(0,0,0,0)', font=dict(size=11)), height=400)
         st.plotly_chart(fig_r, use_container_width=True)
 
-    with tab3:
-        st.markdown('<div class="section-header">Score Methodology</div>', unsafe_allow_html=True)
-        st.markdown("""
-        <div class="formula-box">
-            <span class="f1">C1 · Surplus Ratio    (max 35 pts)</span><span class="cite">  — Carroll (1997)</span><br>
-            <span class="f2">C2 · Housing Stress   (max 25 pts)</span><span class="cite">  — AHURI (2023) 30% threshold</span><br>
-            <span class="f3">C3 · Emerg. Buffer    (max 20 pts)</span><span class="cite">  — Deaton (1991) ≥3 months</span><br>
-            <span class="f1">C4 · Fin. Literacy    (max 10 pts)</span><span class="cite">  — Lusardi & Mitchell (2014)</span><br>
-            <span class="f2">C5 · Food Security    (max 10 pts)</span><span class="cite">  — Gundersen & Ziliak (2015)</span>
+        over_cats = [rcats[i] for i, v in enumerate(rvals) if v > bvals[i]]
+        st.markdown(f"""
+        <div class="explain-box">
+            <div class="explain-title">💡 How to Read the Radar</div>
+            The <b style="color:#10B981">green dashed shape</b> is the ideal spending profile — the "benchmark zone".
+            The <b style="color:#F43F5E">red filled shape</b> is your actual profile.
+            Anywhere your red shape <b>bulges outside the green</b> is where you are overspending relative to the benchmark.<br><br>
+            {"Your highest-priority areas to address: <b>" + ", ".join(over_cats) + "</b>." if over_cats else "✅ Your profile fits well within the benchmark zone across all categories — well balanced."}
         </div>""", unsafe_allow_html=True)
 
-        comps  = ai['score_components']
-        vals   = list(comps.values())
-        total  = sum(vals)
+    # ════════════════════════════════════════════
+    # TAB 3 — SCORE LOGIC
+    # ════════════════════════════════════════════
+    with tab3:
+        st.markdown('<div class="section-header">How your resilience score was built</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="explain-box">
+            <div class="explain-title">🔬 The 5-Component Framework</div>
+            Your score is not a simple rule-of-thumb — it is built from five independent dimensions,
+            each grounded in a peer-reviewed academic source. Each component contributes a different
+            maximum number of points to the 100-point total. The waterfall chart below shows exactly
+            how each component stacked up to reach your final score.
+        </div>""", unsafe_allow_html=True)
+
+        st.markdown("""
+        <div class="formula-box">
+            <span class="f1">C1 · Surplus Ratio    (max 35 pts)</span><span class="cite">  — Carroll (1997) · Are you earning more than you spend?</span><br>
+            <span class="f2">C2 · Housing Stress   (max 25 pts)</span><span class="cite">  — AHURI (2023)   · Is rent below 30% of income?</span><br>
+            <span class="f3">C3 · Emergency Buffer (max 20 pts)</span><span class="cite">  — Deaton (1991)  · Do you have ≥3 months of savings?</span><br>
+            <span class="f1">C4 · Fin. Literacy    (max 10 pts)</span><span class="cite">  — Lusardi & Mitchell (2014) · Self-reported knowledge level</span><br>
+            <span class="f2">C5 · Food Security    (max 10 pts)</span><span class="cite">  — Gundersen & Ziliak (2015) · No meal-skipping = 10 pts</span>
+        </div>""", unsafe_allow_html=True)
+
+        # Waterfall chart ─────────────────────────────────────────────────
+        comps = ai['score_components']
+        vals  = list(comps.values())
+        total = sum(vals)
         fig_wf = go.Figure(go.Waterfall(
             orientation="v", measure=["relative"]*len(vals)+["total"],
             x=list(comps.keys())+["Final Score"], y=vals+[total],
-            connector=dict(line=dict(color="#E2DDD6", width=1)),
+            connector=dict(line=dict(color="rgba(160,160,160,0.3)", width=1)),
             increasing=dict(marker_color="#10B981"), decreasing=dict(marker_color="#F43F5E"),
             totals=dict(marker_color="#6366F1"),
-            text=[f"{v:+.1f}" for v in vals]+[f"{total:.0f}"],
-            textposition="outside", textfont=dict(color="#44403C", size=11),
+            text=[f"{v:+.1f} pts" for v in vals]+[f"{total} / 100"],
+            textposition="outside", textfont=dict(size=11),
         ))
         fig_wf.update_layout(**CHART_LAYOUT,
-            yaxis=dict(showgrid=False, range=[0, max(total, 100)+18]),
-            xaxis=dict(showgrid=False, tickfont=dict(size=9, color="#64748b")),
+            yaxis=dict(showgrid=False, range=[0, max(total,100)+22]),
+            xaxis=dict(showgrid=False, tickfont=dict(size=10)),
             showlegend=False, height=380)
         st.plotly_chart(fig_wf, use_container_width=True)
 
-        sc, lc = ("var(--green)" if ai['score']>=65 else "var(--teal)" if ai['score']>=40 else "var(--red)"), \
-                 ("Strong" if ai['score']>=65 else "Moderate" if ai['score']>=40 else "Vulnerable")
+        st.markdown(f"""
+        <div class="explain-box">
+            <div class="explain-title">💡 Reading the Waterfall Chart</div>
+            Each <b style="color:#10B981">green bar</b> is a component that added points to your score.
+            Each <b style="color:#F43F5E">red bar</b> would represent a component that added 0 (no negative points — the minimum per component is 0).
+            The <b style="color:#6366F1">purple bar</b> on the right is your final total of <b>{total}/100</b>.
+            The tallest green bars are your financial strengths — the shortest (or absent) ones are your improvement opportunities.
+        </div>""", unsafe_allow_html=True)
+
+        # Per-component breakdown cards ───────────────────────────────────
+        st.markdown('<div class="section-header">Component-by-component breakdown</div>', unsafe_allow_html=True)
+        maxes = {"Surplus Ratio": 35, "Housing Stress": 25, "Emerg. Buffer": 20, "Fin. Literacy": 10, "Food Security": 10}
+        comp_notes = {
+            "Surplus Ratio":  f"Your income surplus is {'positive' if ai['surplus']>=0 else 'negative'} at {surplus_display}/month. {'Strong foundation.' if ai['surplus']>=0 else 'This is your most urgent issue.'}",
+            "Housing Stress": f"Rent is {ai['rent_pct']:.1f}% of income. {'Below 30% — no housing stress.' if ai['rent_pct']<=30 else 'Above 30% — you are in housing stress.'}",
+            "Emerg. Buffer":  f"Your savings cover {ai['runway']} months of expenses. {'Good buffer.' if ai['runway']>=3 else 'Below the 3-month minimum.'}",
+            "Fin. Literacy":  f"Self-reported as {data['lit']}. Higher literacy strongly predicts better financial outcomes (Lusardi & Mitchell, 2014).",
+            "Food Security":  f"{'No meal-skipping recorded — full 10 points.' if data['meals']=='No' else 'Meal-skipping detected — 0 points. This is a critical stress indicator.'}",
+        }
+        for comp, score_val in comps.items():
+            max_val   = maxes.get(comp, 10)
+            bar_pct   = round(score_val / max_val * 100)
+            bar_col   = "#10B981" if bar_pct >= 60 else "#F59E0B" if bar_pct >= 30 else "#F43F5E"
+            st.markdown(f"""
+            <div class="card" style="margin-bottom:10px;padding:16px 20px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <span style="font-weight:700;font-size:0.95rem;color:var(--text-primary)">{comp}</span>
+                    <span style="font-family:'Courier Prime',monospace;font-weight:700;font-size:1rem;color:{bar_col}">{score_val} / {max_val} pts</span>
+                </div>
+                <div class="bench-track" style="height:8px;margin-bottom:10px">
+                    <div class="bench-fill" style="width:{bar_pct}%;background:{bar_col};height:8px"></div>
+                </div>
+                <div style="font-size:0.84rem;color:var(--text-muted);line-height:1.6">{comp_notes.get(comp,'')}</div>
+            </div>""", unsafe_allow_html=True)
+
+        sc  = "var(--green)" if ai['score']>=65 else "var(--amber)" if ai['score']>=40 else "var(--coral)"
+        lc  = "Strong" if ai['score']>=65 else "Moderate" if ai['score']>=40 else "Vulnerable"
         st.markdown(f"""
         <div class="insight-grid">
             <div class="insight-card">
                 <div class="i-label">Final Score</div>
                 <div class="i-value" style="color:{sc}">{ai['score']}/100</div>
-                <div class="i-sub">Resilience: {lc}</div>
+                <div class="i-sub">Band: {lc}</div>
             </div>
             <div class="insight-card">
                 <div class="i-label">Monthly Surplus</div>
@@ -1185,43 +1521,95 @@ elif st.session_state.step == "results":
             </div>
         </div>""", unsafe_allow_html=True)
 
+    # ════════════════════════════════════════════
+    # TAB 4 — RECOMMENDATIONS
+    # ════════════════════════════════════════════
     with tab4:
-        st.markdown('<div class="section-header">Recommendations</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Personalised action plan</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="explain-box">
+            <div class="explain-title">💡 These Are Specific to Your Data</div>
+            Every recommendation below was generated directly from the numbers you entered — not generic advice.
+            They are ordered by financial impact. Focus on the first one first.
+        </div>""", unsafe_allow_html=True)
+
         recs = []
+        if ai['surplus'] < 0:
+            recs.append(("⚡ URGENT — Monthly Deficit", "var(--coral)",
+                         f"You are spending <b>${abs(ai['surplus']):,.0f} more than you earn every month</b>. This is unsustainable. Contact your university's Financial Hardship Office this week — emergency grants, interest-free loans, and fee-deferral options may be available to you right now."))
         if ai['rent_pct'] > 30:
-            recs.append(("🏠 Housing", f"Rent is {ai['rent_pct']:.1f}% of income — above AHURI's 30% stress threshold. Shared accommodation in Auburn or Parramatta can reduce costs by 15–25%."))
+            saving = round((ai['rent_pct'] - 28) / 100 * ai['m_inc'])
+            recs.append(("🏠 Housing Stress", "var(--coral)",
+                         f"Your rent is <b>{ai['rent_pct']:.1f}% of income</b> — above the AHURI 30% stress threshold. Moving to shared accommodation in Auburn, Parramatta or Strathfield could save you approximately <b>${saving}/month</b> and directly improve your resilience score."))
         if ai['uber_pct'] > 15:
             saving = round(float(data['uber']) * 4.33 * 0.4)
-            recs.append(("🍔 Discretionary", f"Cutting lifestyle spend by 40% frees ~${saving}/month. Meal prepping 4 days a week is the single highest-impact change."))
+            recs.append(("🍔 Discretionary Spending", "var(--amber)",
+                         f"Cutting Uber Eats and eating-out by 40% would free <b>~${saving}/month</b>. Meal prepping just 4 days a week is the single highest-impact behavioural change you can make right now — it costs less and builds a healthy habit."))
         if ai['runway'] < 3:
-            recs.append(("💰 Emergency Buffer", f"Only {ai['runway']} months of runway — target 3 months minimum (Deaton 1991). Even $50/week consistently will get you there."))
+            monthly_needed = round((ai['m_exp'] * 3 - float(data['savings'])) / 12)
+            recs.append(("💰 Build Your Emergency Buffer", "var(--teal)",
+                         f"You have <b>{ai['runway']} months</b> of savings runway — the research minimum is 3 months (Deaton, 1991). Saving an extra <b>${max(monthly_needed,50):,}/month</b> would get you to the 3-month target within 12 months."))
         if float(data['remit']) > ai['m_inc'] * 0.15:
-            recs.append(("💸 Remittances", "Remittances exceed 15% of income. Wise or Remitly offer lower fees than banks — batch transfers monthly to cut fixed costs."))
+            fee_save = round(float(data['remit']) * 0.025)
+            recs.append(("💸 Reduce Remittance Fees", "var(--indigo)",
+                         f"You are sending <b>{ai['remit_pct']:.1f}% of income</b> overseas — above the World Bank's 15% guideline. Switching from bank transfers to <b>Wise or Remitly</b> (typically 0.5–1.5% fees vs. 3–5% for banks) could save you <b>~${fee_save}/month</b> in fees alone."))
         if data['meals'] == "Yes":
-            recs.append(("🍱 Food Security", "Free meals are available through most Sydney university student hubs. OzHarvest and Foodbank NSW also provide emergency food support."))
-        if ai['surplus'] < 0:
-            recs.append(("⚡ Deficit", f"Spending ${abs(ai['surplus']):,.0f}/month more than you earn. Contact your university's financial hardship office — emergency grants may be available."))
+            recs.append(("🍱 Food Security — Act Now", "var(--coral)",
+                         "Meal-skipping is one of the most critical stress indicators in this research (Gundersen & Ziliak, 2015). <b>Free meals</b> are available at your university student hub. <b>OzHarvest</b> and <b>Foodbank NSW</b> also provide emergency food support — no questions asked, no cost."))
+        if data.get('lit') == "Novice":
+            recs.append(("📚 Improve Financial Literacy", "var(--teal)",
+                         "Financial literacy directly predicts better money outcomes. Free resources: <b>ASIC MoneySmart</b> (moneysmart.gov.au), your university financial counsellor, and <b>Student Edge</b> for student-specific discounts and budgeting tools."))
         if not recs:
-            recs.append(("✅ On Track", "No critical stress points. Keep your surplus steady and push your emergency buffer toward the 6-month mark."))
+            recs.append(("✅ You Are On Track", "var(--green)",
+                         "No critical stress points in your profile. To keep improving: maintain your surplus, push your savings rate toward 25%, and build your emergency buffer toward 6 months."))
 
-        for title, body in recs:
-            st.markdown(f'<div class="rec-card"><div class="rec-title">{title}</div><div class="rec-body">{body}</div></div>', unsafe_allow_html=True)
+        for i, (title, accent, body) in enumerate(recs):
+            priority_badge = '<span style="font-size:0.65rem;font-family:\'Courier Prime\',monospace;color:var(--coral);margin-left:8px">● HIGHEST PRIORITY</span>' if i == 0 and len(recs) > 1 else ""
+            st.markdown(f"""
+            <div class="rec-card" style="border-left-color:{accent}">
+                <div class="rec-title" style="color:{accent}">{title}{priority_badge}</div>
+                <div class="rec-body">{body}</div>
+            </div>""", unsafe_allow_html=True)
 
+        # Savings projection ──────────────────────────────────────────────
         st.markdown('<div class="section-header">12-Month Savings Projection</div>', unsafe_allow_html=True)
-        mths       = list(range(0, 13))
-        cur_sav    = float(data['savings'])
-        m_add      = max(ai['surplus'], 0)
-        fig_proj   = go.Figure()
-        fig_proj.add_trace(go.Scatter(x=mths, y=[cur_sav + m_add*m for m in mths],
-            name="Current", line=dict(color="#6366F1", width=2.5),
+        mths      = list(range(0, 13))
+        cur_sav   = float(data['savings'])
+        m_add     = max(ai['surplus'], 0)
+        target_3  = ai['m_exp'] * 3
+        fig_proj  = go.Figure()
+        fig_proj.add_trace(go.Scatter(
+            x=mths, y=[cur_sav + m_add*m for m in mths],
+            name="Current trajectory",
+            line=dict(color="#6366F1", width=2.5),
             fill='tozeroy', fillcolor='rgba(99,102,241,0.07)'))
-        fig_proj.add_trace(go.Scatter(x=mths, y=[cur_sav + m_add*1.2*m for m in mths],
-            name="If 20% more saved", line=dict(color="#10B981", width=2, dash='dash')))
+        fig_proj.add_trace(go.Scatter(
+            x=mths, y=[cur_sav + m_add*1.2*m for m in mths],
+            name="If 20% more saved",
+            line=dict(color="#10B981", width=2, dash='dash')))
+        fig_proj.add_hline(y=target_3, line_dash="dot", line_color="#F43F5E",
+            annotation_text=f"3-month target: ${target_3:,.0f}",
+            annotation_position="top right",
+            annotation_font=dict(color="#F43F5E", size=11))
         fig_proj.update_layout(**CHART_LAYOUT,
-            xaxis=dict(title="Month", showgrid=False, color="#475569"),
-            yaxis=dict(title="Savings ($)", showgrid=False, color="#475569"),
-            legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=11)), height=300)
+            xaxis=dict(title="Month", showgrid=False),
+            yaxis=dict(title="Total Savings (AUD $)", showgrid=False),
+            legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=11)), height=320)
         st.plotly_chart(fig_proj, use_container_width=True)
+
+        proj_12   = cur_sav + m_add * 12
+        gap       = target_3 - proj_12
+        proj_msg  = (f"At your current savings rate, you will reach <b>${proj_12:,.0f}</b> in 12 months — <b>above the 3-month target of ${target_3:,.0f}</b>. ✅"
+                     if gap <= 0 else
+                     f"At your current rate, you will reach <b>${proj_12:,.0f}</b> in 12 months — still <b>${gap:,.0f} short</b> of the 3-month target. Saving an extra <b>${round(gap/12):,}/month</b> closes that gap exactly in 12 months.")
+        st.markdown(f"""
+        <div class="explain-box">
+            <div class="explain-title">💡 Reading Your Savings Projection</div>
+            The <b style="color:#6366F1">purple line</b> is your savings trajectory if you continue at current behaviour.
+            The <b style="color:#10B981">green dashed line</b> shows the impact of saving just 20% more each month.
+            The <b style="color:#F43F5E">red dotted line</b> is your 3-month emergency buffer target (${target_3:,.0f}).<br><br>
+            {proj_msg}
+        </div>""", unsafe_allow_html=True)
 
     # ── POST-SURVEY  (3 questions + 1 intent) ─────────────────────────────────
     st.markdown("---")
