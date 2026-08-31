@@ -1,4 +1,6 @@
 streamlit
-gspread
 pandas
-plotly
+statsmodels
+seaborn
+matplotlib
+numpy
